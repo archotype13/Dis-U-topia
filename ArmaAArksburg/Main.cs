@@ -37,18 +37,11 @@ public class RootConsole: ScreenObject
         };
         Engine.Map.AddActor(Engine.Player);
 
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 1; i++)
         {
             Actor actor = new(new ColoredGlyph(Color.LightSalmon, Color.Transparent, '@'), (20,20));
             actor.Solid = true;
             actor.Ai = new MobAi(actor);
-            Engine.Map.AddActor(actor);
-        }
-
-        for (int i = 0; i < 10000; i++)
-        {
-            Actor actor = new(new ColoredGlyph(Color.Purple, Color.Transparent, '@'), (0,1));
-            actor.Solid = true;
             Engine.Map.AddActor(actor);
         }
 

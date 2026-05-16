@@ -1,5 +1,5 @@
 using SadConsole.Input;
-
+using Astar;
 public abstract class Ai(Actor owner)
 {
     public int Energy = 0; // amount of points the actor has to spend on it's turn
@@ -77,7 +77,6 @@ public class MobAi : Ai
     public override Action TakeTurn()
     {
         List<Point> path = AStar.GetPathTo(_owner.Position, Engine.Player!.Position, Engine.Map!, Engine.Map!.IsSolidAt, true, 25);
-        Engine.DebugHighlights = path;
         if (path.Count > 0)
             return new MoveAction(_owner, path.First());
         return new WaitAction(_owner);

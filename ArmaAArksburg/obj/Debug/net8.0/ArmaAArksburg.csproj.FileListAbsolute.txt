@@ -75,3 +75,4 @@
 /Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.pdb
 /Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.genruntimeconfig.cache
 /Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ref/ArmaAArksburg.dll
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.sourcelink.json
