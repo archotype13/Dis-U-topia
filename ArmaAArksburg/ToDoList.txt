@@ -1,0 +1,36 @@
+To do list
+-----------------------------------------
+
+Line of Sight
+    Permissive?
+
+Doors????
+    change pathfinding to add door tiles
+
+Action results
+    avoid infinite loops while allowing actors to use all of their energy
+    include speed for speed costs
+
+-----------------------------------------
+Long term to do list
+-----------------------------------------
+
+Combat System
+Body part System
+Ui System
+Partical System
+
+Traps!!
+    Beartraps
+    landmines
+    shotgun Traps
+    broken glass!! Like everywhere!!
+        Player can place broken glass by throwing bottles at ground
+    caltrops
+
+Even faster collision
+    Hash of points and actors to check what actors are on a tile
+
+pathfinding
+    more detailed functions determining where actors will step (doors and size limitations)
+    Weighted terrain

@@ -1,0 +1,14 @@
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/bin/Debug/net10.0/ArmaAArksburg
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/bin/Debug/net10.0/ArmaAArksburg.deps.json
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/bin/Debug/net10.0/ArmaAArksburg.runtimeconfig.json
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/bin/Debug/net10.0/ArmaAArksburg.dll
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/bin/Debug/net10.0/ArmaAArksburg.pdb
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.GeneratedMSBuildEditorConfig.editorconfig
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.AssemblyInfoInputs.cache
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.AssemblyInfo.cs
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.csproj.CoreCompileInputs.cache
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.dll
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/refint/ArmaAArksburg.dll
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.pdb
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ArmaAArksburg.genruntimeconfig.cache
+/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net10.0/ref/ArmaAArksburg.dll
