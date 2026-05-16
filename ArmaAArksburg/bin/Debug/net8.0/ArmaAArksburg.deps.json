@@ -127,6 +127,10 @@
         }
       },
       "NVorbis/0.10.4": {
+        "dependencies": {
+          "System.Memory": "4.5.3",
+          "System.ValueTuple": "4.5.0"
+        },
         "runtime": {
           "lib/netstandard2.0/NVorbis.dll": {
             "assemblyVersion": "0.10.4.0",
@@ -150,7 +154,8 @@
       "SadConsole.Extended/10.6.0": {
         "dependencies": {
           "ColorMineStandard": "1.0.0",
-          "SadConsole": "10.6.0"
+          "SadConsole": "10.6.0",
+          "System.Text.Encoding.CodePages": "7.0.0"
         },
         "runtime": {
           "lib/net8.0/SadConsole.Extended.dll": {
@@ -170,6 +175,9 @@
           }
         }
       },
+      "System.Memory/4.5.3": {},
+      "System.Text.Encoding.CodePages/7.0.0": {},
+      "System.ValueTuple/4.5.0": {},
       "TheSadRogue.Primitives/1.6.0": {
         "runtime": {
           "lib/net8.0/TheSadRogue.Primitives.dll": {
@@ -255,6 +263,27 @@
       "sha512": "sha512-ZVYwsEn6Of73Q9g+cUc5OB/0LCe8x37XJPqGdZaUNhQAX2kvStmvgMfRTK5KNIc7J4/oFghBoqnWj8FT3MFbcA==",
       "path": "sadconsole.host.monogame/10.6.0",
       "hashPath": "sadconsole.host.monogame.10.6.0.nupkg.sha512"
+    },
+    "System.Memory/4.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA==",
+      "path": "system.memory/4.5.3",
+      "hashPath": "system.memory.4.5.3.nupkg.sha512"
+    },
+    "System.Text.Encoding.CodePages/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LSyCblMpvOe0N3E+8e0skHcrIhgV2huaNcjUUEa8hRtgEAm36aGkRoC8Jxlb6Ra6GSfF29ftduPNywin8XolzQ==",
+      "path": "system.text.encoding.codepages/7.0.0",
+      "hashPath": "system.text.encoding.codepages.7.0.0.nupkg.sha512"
+    },
+    "System.ValueTuple/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
+      "path": "system.valuetuple/4.5.0",
+      "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
     },
     "TheSadRogue.Primitives/1.6.0": {
       "type": "package",

@@ -36,3 +36,42 @@
 /home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.pdb
 /home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.genruntimeconfig.cache
 /home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ref/ArmaAArksburg.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/ArmaAArksburg
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/ArmaAArksburg.deps.json
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/ArmaAArksburg.runtimeconfig.json
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/ArmaAArksburg.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/ArmaAArksburg.pdb
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/ColorMineStandard.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/Coroutine.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/MonoGame.Framework.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/NVorbis.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/SadConsole.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/SadConsole.Extended.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/SadConsole.Host.MonoGame.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/TheSadRogue.Primitives.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/android-arm/native/libopenal.so
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/android-arm64/native/libopenal.so
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/android-x64/native/libopenal.so
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/android-x86/native/libopenal.so
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/ios-arm64/native/libopenal.dylib
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/iossimulator-arm64/native/libopenal.dylib
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/iossimulator-x64/native/libopenal.dylib
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/linux-x64/native/libopenal.so
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/osx/native/libopenal.dylib
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/win-x64/native/openal.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/linux-x64/native/libSDL2-2.0.so.0
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/osx/native/libSDL2-2.0.0.dylib
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/bin/Debug/net8.0/runtimes/win-x64/native/SDL2.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.csproj.AssemblyReference.cache
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.GeneratedMSBuildEditorConfig.editorconfig
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.AssemblyInfoInputs.cache
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.AssemblyInfo.cs
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.csproj.CoreCompileInputs.cache
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.sourcelink.json
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArk.70693972.Up2Date
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/refint/ArmaAArksburg.dll
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.pdb
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ArmaAArksburg.genruntimeconfig.cache
+/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/Debug/net8.0/ref/ArmaAArksburg.dll

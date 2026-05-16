@@ -577,25 +577,24 @@
     ]
   },
   "packageFolders": {
-    "/home/archotype/.nuget/packages/": {}
+    "/Users/owen/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
+      "projectUniqueName": "/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
       "projectName": "ArmaAArksburg",
-      "projectPath": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
-      "packagesPath": "/home/archotype/.nuget/packages/",
-      "outputPath": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/",
+      "projectPath": "/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
+      "packagesPath": "/Users/owen/.nuget/packages/",
+      "outputPath": "/Users/owen/Documents/Programming Projects/Armageddon-At-Arksburg/ArmaAArksburg/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/archotype/.nuget/NuGet/NuGet.Config"
+        "/Users/owen/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/usr/lib/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -614,7 +613,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -646,8 +645,16 @@
         "warn": true,
         "downloadDependencies": [
           {
-            "name": "Microsoft.NETCore.App.Host.linux-x64",
-            "version": "[8.0.26, 8.0.26]"
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.14, 8.0.14]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.osx-arm64",
+            "version": "[8.0.14, 8.0.14]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.14, 8.0.14]"
           }
         ],
         "frameworkReferences": {
@@ -655,7 +662,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.107/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

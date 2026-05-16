@@ -39,7 +39,7 @@ public class RootConsole: ScreenObject
 
         for (int i = 0; i < 50; i++)
         {
-            Actor actor = new(new ColoredGlyph(Color.RoyalBlue, Color.Transparent, '@'), (20,20));
+            Actor actor = new(new ColoredGlyph(Color.LightSalmon, Color.Transparent, '@'), (20,20));
             actor.Solid = true;
             actor.Ai = new MobAi(actor);
             Engine.Map.AddActor(actor);
