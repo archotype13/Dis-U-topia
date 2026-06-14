@@ -10,6 +10,14 @@ public class WorldViewport : Console
                 Surface[x, y].CopyAppearanceFrom(Engine.Instance!.ContentManager.TilePallete[level.GetTileAt(x, y).Id].Appearance);
             }
         }
+
+        foreach (Entity entity in level.Entities)
+        {
+            if (entity.Position != null && entity.Render != null)
+            {
+                entity.Render.Draw(entity.Position.Cords, Surface);
+            }
+        }
     }
 
 

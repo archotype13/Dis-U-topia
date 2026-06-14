@@ -13,5 +13,5 @@ Builder
 static void Startup(object? sender, GameHost host)
 {
     // create a new engine
-    new Engine();
+    _ = new Engine();
 }

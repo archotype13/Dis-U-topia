@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 public class Level
 {
     public struct Tile(int id)
@@ -10,6 +8,7 @@ public class Level
     public int Width;
     public int Height;
     private Tile[] Tiles;
+    public List<Entity> Entities = [];
 
 
     public Tile GetTileAt(int x, int y)
@@ -31,5 +30,12 @@ public class Level
         Width = width;
         Height = height;
         Tiles = new Tile[width * height];
+
+        Entities.Add(new Entity()
+        {
+            Position = new(5, 5),
+            Render = new(new(Color.Yellow, Color.Transparent, '@'))
+        }
+        );
     }
 }

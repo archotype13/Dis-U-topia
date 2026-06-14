@@ -4,6 +4,6 @@ public class ContentManager
 
     public ContentManager()
     {
-        TilePallete.Add(0, new TileData(new ColoredGlyph(Color.MistyRose, Color.Blue, '#')));
+        TilePallete.Add(0, new TileData(new ColoredGlyph(Color.Transparent, Color.Blue, ' ')));
     }
 }
