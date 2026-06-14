@@ -33,9 +33,24 @@ public class Level
 
         Entities.Add(new Entity()
         {
-            Position = new(5, 5),
-            Render = new(new(Color.Yellow, Color.Transparent, '@'))
+            Name = "John Doe",
+            Position = new(width / 2, height / 2),
+            Render = new(new(Color.Yellow, Color.Transparent, '@')),
+            Ai = new DrunkAiComponent()
         }
         );
+
+        Engine.Instance!.GameManager.Player = new Entity()
+        {
+            Name = "Jane Doe",
+            Position = new(6, 5),
+            Render = new(new(Color.Purple, Color.Transparent, '@')),
+            Ai = new PlayerAiComponent()
+            {
+                Speed = 50
+            }
+        };
+
+        Entities.Add(Engine.Instance!.GameManager.Player);
     }
 }

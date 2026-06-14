@@ -1,17 +1,16 @@
-using System.Diagnostics;
-using System.Net.Cache;
-using Newtonsoft.Json;
+using SadConsole.Input;
 
 public class Engine : ScreenObject
 {
     public static Engine? Instance {get; private set;}
+    public static Keyboard Keyboard {get; private set;} = Game.Instance.Keyboard;
+    public static Random Rng {get; private set;}= Random.Shared;
     public ContentManager ContentManager {get; private set;} = new();
     public ScreenObjectManager ScreenManager {get; private set;} = new();
     public GameManager GameManager {get; private set;} = new();
 
     public override void Update(TimeSpan delta)
     {
-        GameManager.Update(delta);
         base.Update(delta);
     }
 
@@ -20,6 +19,7 @@ public class Engine : ScreenObject
         Instance = this;
         Game.Instance.Screen = this; // make the current screen
         Children.Add(ScreenManager);
+        Children.Add(GameManager);
 
         GameManager.CurrentLevel = new(ScreenManager.WorldView.Width, ScreenManager.WorldView.Height);
 

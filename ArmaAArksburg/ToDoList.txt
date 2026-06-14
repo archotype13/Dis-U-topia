@@ -1,0 +1,11 @@
+collision
+way to check turn process time
+loading content
+astar
+hp and fighting
+items
+inventory
+saving and loading
+modular ai
+
+maybe player shouldn't have ai

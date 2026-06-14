@@ -1,13 +1,72 @@
-public class GameManager
+public class GameManager : ScreenObject // manages game state, turn order of entities, and the current level
 {
+    public Entity? Player;
     public Level? CurrentLevel;
 
+    public GameState CurrentState = GameState.PLAYER_TURN;
+    public enum GameState
+    {
+        PLAYER_TURN,
+        NEW_TURN
+    };
 
-    public void Update(TimeSpan delta)
+    public override void Update(TimeSpan delta)
     {
         if (CurrentLevel != null)
         {
+            // redraw level
             Engine.Instance!.ScreenManager.WorldView.RedrawLevel(CurrentLevel);
+            TickRound();
+        }
+        base.Update(delta);
+    }
+
+    // do turn order
+    private void TickRound()
+    {
+        if (CurrentState == GameState.PLAYER_TURN) // perform the player's turn to allow them to take their time
+        {
+            if (Player != null)
+            {
+                TickEntity(Player);
+
+                if (Player.Ai!.Energy <= 0)
+                    CurrentState = GameState.NEW_TURN;
+            }
+        }
+        if (CurrentState == GameState.NEW_TURN) // tick through all the non-player entities to perform their turns
+        {
+            foreach (Entity entity in CurrentLevel!.Entities)
+            {
+                if (entity != Player && entity.Ai != null)
+                {
+                    entity.Ai.Energy += 100; // add their energy
+                    while (entity.Ai.Energy > 0)
+                        TickEntity(entity);
+                }
+            }
+            Player!.Ai!.Energy += 100; // add player energy
+            CurrentState = GameState.PLAYER_TURN;
+        }
+
+    }
+
+    private void TickEntity(Entity entity, bool endTurnOnFail = true) // performs a single entity's turn
+    {
+        EntityAction action = entity.Ai!.Turn(entity);
+        ActionResult result = action.Perform(entity);
+        
+        // handle results
+        switch (result)
+        {
+            case SucceededActionResult succeeded: // if succeeded, remove energy cost
+                entity.Ai.Energy -= succeeded.UsedEnergy;
+                break;
+            case FailedActionResult failed: // if failed return
+                if (endTurnOnFail)
+                    entity.Ai.Energy = 0;
+                break;
+            default: break;
         }
     }
 }

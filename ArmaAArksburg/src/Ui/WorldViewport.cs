@@ -15,9 +15,11 @@ public class WorldViewport : Console
         {
             if (entity.Position != null && entity.Render != null)
             {
-                entity.Render.Draw(entity.Position.Cords, Surface);
+                if (Surface.Area.Contains(entity.Position.Cords))
+                    entity.Render.Draw(entity.Position.Cords, Surface);
             }
         }
+        IsDirty = true;
     }
 
 
