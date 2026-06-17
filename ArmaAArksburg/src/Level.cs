@@ -44,7 +44,6 @@ public class Level
     public bool IsSolidAt(int x, int y)
     {
         ValueTuple<int, int> cell = Grid.GetCell(x, y);
-        System.Console.WriteLine($"movecost: {cell.Item2}");
         if (cell.Item1 > 0)
             return true;
         return false;

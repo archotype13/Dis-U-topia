@@ -61,17 +61,42 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
     private void TickEntity(Entity entity, bool endTurnOnFail = true) // performs a single entity's turn
     {
         EntityAction action = entity.Ai!.Turn(entity);
+        EntityPerformAction(entity, action, endTurnOnFail);
+        // ActionResult result = action.Perform(entity);
+        
+        // // handle results
+        // switch (result)
+        // {
+        //     case SucceededActionResult succeeded: // if succeeded, remove energy cost
+        //         entity.Ai.Energy -= succeeded.UsedEnergy;
+        //         break;
+        //     case FailedActionResult failed: // if failed return
+        //         if (endTurnOnFail)
+        //             entity.Ai.Energy = 0;
+        //         break;
+        //     case AlternativeActionResult alternativeAction:
+                
+        //         break;
+        //     default: break;
+        // }
+    }
+
+    private void EntityPerformAction(Entity entity, EntityAction action, bool endTurnOnFail = true) // performs an action for an entity and handles the results
+    {
         ActionResult result = action.Perform(entity);
         
         // handle results
         switch (result)
         {
             case SucceededActionResult succeeded: // if succeeded, remove energy cost
-                entity.Ai.Energy -= succeeded.UsedEnergy;
+                entity.Ai!.Energy -= succeeded.UsedEnergy;
                 break;
-            case FailedActionResult failed: // if failed return
+            case FailedActionResult: // if failed return
                 if (endTurnOnFail)
-                    entity.Ai.Energy = 0;
+                    entity.Ai!.Energy = 0;
+                break;
+            case AlternativeActionResult alternativeAction: // if alternate action, perform that new action
+                EntityPerformAction(entity, alternativeAction.NewAction, endTurnOnFail);
                 break;
             default: break;
         }

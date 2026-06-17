@@ -11,11 +11,16 @@ public class ActionResult
     
 }
 
-public class SucceededActionResult(int usedEnergy): ActionResult
+public class SucceededActionResult(int usedEnergy): ActionResult // returns used energy
 {
     public int UsedEnergy = usedEnergy;
 }
 
-public class FailedActionResult() : ActionResult
+public class FailedActionResult() : ActionResult // does nothing for player but immediately ends an entity's turn
 {
+}
+
+public class AlternativeActionResult(EntityAction newAction) : ActionResult // makes the entity take a different action
+{
+    public EntityAction NewAction = newAction;
 }

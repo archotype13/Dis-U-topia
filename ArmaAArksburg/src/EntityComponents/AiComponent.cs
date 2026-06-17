@@ -62,6 +62,7 @@ public class DrunkAiComponent : AiComponent
 {
     public override EntityAction Turn(Entity owner)
     {
-        return new MoveAction(owner.Position!.Cords + (Engine.Rng.Next(0, 3) - 1, Engine.Rng.Next(0, 3) - 1), Speed);
+        return new PathMoveAction(Engine.Instance!.GameManager.Player!.Position!.Cords, owner.Ai!.Speed, 100);
+        // return new MoveAction(owner.Position!.Cords + (Engine.Rng.Next(0, 3) - 1, Engine.Rng.Next(0, 3) - 1), Speed);
     }
 }

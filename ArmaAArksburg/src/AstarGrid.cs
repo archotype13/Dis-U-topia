@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography.X509Certificates;
 
 public class AStarGrid // used to track solid and weights for pathfinding and collision detection!
@@ -5,6 +6,15 @@ public class AStarGrid // used to track solid and weights for pathfinding and co
     public int Width;
     public int Height;
     private ValueTuple<int, int>[] _cells; // first int is the amount of solids, second is the amount of weight
+
+    public bool IsInBounds(int x, int y)
+    {
+        if (x >= 0 && y >= 0 && x < Width && y < Height)
+            return true;
+        return false;
+    }
+
+    public bool IsInBounds(Point point) { return IsInBounds(point.X, point.Y); }
 
     // get cell data
     public ValueTuple<int, int> GetCell(int x, int y)

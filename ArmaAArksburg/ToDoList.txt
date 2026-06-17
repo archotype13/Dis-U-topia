@@ -1,7 +1,6 @@
-collision
-    doors
-astar
-    add third item to astar grid for solid threshold. Doors increase the threshold
+doors
+    astar
+        add third item to astar grid for solid threshold. Doors increase the threshold
 ui
 hp and fighting
     basic hp
