@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class GameManager : ScreenObject // manages game state, turn order of entities, and the current level
 {
     public Entity? Player;
@@ -28,7 +30,7 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
         {
             if (Player != null)
             {
-                TickEntity(Player);
+                TickEntity(Player, false);
 
                 if (Player.Ai!.Energy <= 0)
                     CurrentState = GameState.NEW_TURN;
@@ -36,6 +38,8 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
         }
         if (CurrentState == GameState.NEW_TURN) // tick through all the non-player entities to perform their turns
         {
+            long startTime = Stopwatch.GetTimestamp(); // get time for perfomance debugging
+
             foreach (Entity entity in CurrentLevel!.Entities)
             {
                 if (entity != Player && entity.Ai != null)
@@ -45,6 +49,9 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
                         TickEntity(entity);
                 }
             }
+
+            System.Console.WriteLine($"Elasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
+
             Player!.Ai!.Energy += 100; // add player energy
             CurrentState = GameState.PLAYER_TURN;
         }

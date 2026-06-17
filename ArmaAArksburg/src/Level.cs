@@ -9,6 +9,7 @@ public class Level
     public int Height;
     private Tile[] Tiles;
     public List<Entity> Entities = [];
+    public AStarGrid Grid;
 
 
     public Tile GetTileAt(int x, int y)
@@ -18,39 +19,101 @@ public class Level
 
     public Tile GetTileAt(Point point) { return GetTileAt(point.X, point.Y); }
 
-    public void SetTileAt(int x, int y, Tile tile)
+    public void SetTileAt(int x, int y, int tileId)
     {
-        Tiles[x + y*Width] = tile;
+        TileData oldTile = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
+        Grid.SetCellSolid(x, y, oldTile.Solid);
+        Grid.SetCellMoveCost(x, y, false, oldTile.MoveCost);
+        TileData newTile = Engine.Instance!.ContentManager.TilePallete[tileId];
+        Tiles[x + y*Width] = new Tile(tileId);
+        Grid.SetCellSolid(x, y, newTile.Solid);
+        Grid.SetCellMoveCost(x, y, true, newTile.MoveCost);
     }
 
-    public void SetTileAt(Point point, Tile tile) { SetTileAt(point.X, point.Y, tile); }
+    public void SetTileAt(Point point, int tileId) { SetTileAt(point.X, point.Y, tileId); }
+
+    public bool IsInBounds(int x, int y) // returns true if the point is in bounds
+    {
+        if (x >= 0 && y >= 0 && x < Width && y < Height)
+            return true;
+        return false;
+    }
+
+    public bool IsInBounds(Point point) {return IsInBounds(point.X, point.Y);}
+
+    public bool IsSolidAt(int x, int y)
+    {
+        ValueTuple<int, int> cell = Grid.GetCell(x, y);
+        System.Console.WriteLine($"movecost: {cell.Item2}");
+        if (cell.Item1 > 0)
+            return true;
+        return false;
+    }
+
+    public bool IsSolidAt(Point point) {return IsSolidAt(point.X, point.Y);}
+
+    public void AddEntity(Entity entity) // change with a better system later
+    {
+        if (entity.Position != null && entity.Position.Solid)
+        {
+            Grid.SetCellSolid(entity.Position.Cords, true);
+        }
+        Entities.Add(entity);
+    }
 
     public Level(int width, int height)
     {
         Width = width;
         Height = height;
         Tiles = new Tile[width * height];
+        Grid = new(Width, Height);
 
-        Entities.Add(new Entity()
+        // testing add solids
+        for (int y = 0; y < height; y++)
         {
-            Name = "John Doe",
-            Position = new(width / 2, height / 2),
-            Render = new(new(Color.Yellow, Color.Transparent, '@')),
-            Ai = new DrunkAiComponent()
+            for (int x = 0; x < width; x++)
+            {
+                if (x % 3 == 0 && y % 3 == 0)
+                    SetTileAt(x, y, 1);
+                else
+                    SetTileAt(x, y, 0);
+            }
         }
-        );
+
+        // add test entities
+        for (int i = 0; i < 100; i++)
+        {
+            AddEntity(new Entity()
+            {
+                Name = "John Doe",
+                Position = new(width / 2 + 1, height / 2)
+                {
+                    Solid = true
+                },
+                Render = new(new(Color.Yellow, Color.Transparent, '@')),
+                Ai = new DrunkAiComponent()
+                {
+                    Speed = 100
+                }
+            }
+            );
+        }
+        
 
         Engine.Instance!.GameManager.Player = new Entity()
         {
             Name = "Jane Doe",
-            Position = new(6, 5),
+            Position = new(6, 5)
+            {
+                Solid = true
+            },
             Render = new(new(Color.Purple, Color.Transparent, '@')),
             Ai = new PlayerAiComponent()
             {
-                Speed = 50
+                Speed = 100
             }
         };
 
-        Entities.Add(Engine.Instance!.GameManager.Player);
+        AddEntity(Engine.Instance!.GameManager.Player);
     }
 }

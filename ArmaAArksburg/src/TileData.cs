@@ -1,4 +1,6 @@
-public class TileData(ColoredGlyph appearance)
+public class TileData()
 {
-    public ColoredGlyph Appearance = appearance;
+    public ColoredGlyph Appearance = new(Color.Transparent, Color.Purple, '?');
+    public bool Solid = false;
+    public int MoveCost = 100;
 }

@@ -5,8 +5,13 @@ public class MoveAction(Point newCords, int speed) : EntityAction // uses the mo
     public override ActionResult Perform(Entity actor)
     {
         if (actor.Position != null)
-            actor.Position.Cords = _newCords;
-        return new SucceededActionResult(_speed);
+        {
+            if (actor.Position.Move(_newCords))
+                return new SucceededActionResult( Math.Max(Engine.Instance!.GameManager.CurrentLevel!.Grid.GetCell(_newCords).Item2 / (actor.Ai!.Speed / 100), 5 ) );
+                // move energy is calculated by dividing by move cost of the tile by the speed divided by the average speed, speed limit is 5 energy points for 20 tiles per turn
+
+        }
+        return new FailedActionResult();
     }
 }
 

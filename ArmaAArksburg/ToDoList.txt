@@ -1,11 +1,24 @@
 collision
-way to check turn process time
-loading content
+    doors
 astar
+    add third item to astar grid for solid threshold. Doors increase the threshold
+ui
 hp and fighting
+    basic hp
+    bodies
+    melee
+    ranged - maybe save for items
 items
-inventory
+    inventory
+    integrate with combat
+loading content
 saving and loading
 modular ai
+    maybe player shouldn't have ai
 
-maybe player shouldn't have ai
+world gen
+
+scrollable world view
+better component added function or certain variables changing
+    stuff for like collision
+traps
