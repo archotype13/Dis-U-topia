@@ -1,4 +1,4 @@
-public class Entity
+public sealed class Entity
 {
     public string Name {get; set;} = "Unnamed";
     public PositionComponent? Position {get; set;}

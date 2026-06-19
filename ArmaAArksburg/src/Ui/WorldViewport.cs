@@ -1,6 +1,6 @@
-public class WorldViewport : Console
+public sealed class WorldViewport : Console
 {
-    
+    public List<Point> debugDrawPoints = [];
     public void RedrawLevel(Level level)
     {
         for (int y = 0; y < level.Height; y ++)
@@ -19,6 +19,12 @@ public class WorldViewport : Console
                     entity.Render.Draw(entity.Position.Cords, Surface);
             }
         }
+
+        foreach (Point point in debugDrawPoints)
+        {
+            Surface[point].Background = Color.Magenta;
+        }
+
         IsDirty = true;
     }
 

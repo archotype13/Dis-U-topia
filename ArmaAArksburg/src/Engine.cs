@@ -1,6 +1,6 @@
 using SadConsole.Input;
 
-public class Engine : ScreenObject
+public sealed class Engine : ScreenObject
 {
     public static Engine? Instance {get; private set;}
     public static Keyboard Keyboard {get; private set;} = Game.Instance.Keyboard;

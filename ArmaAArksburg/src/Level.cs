@@ -43,8 +43,8 @@ public class Level
 
     public bool IsSolidAt(int x, int y)
     {
-        ValueTuple<int, int> cell = Grid.GetCell(x, y);
-        if (cell.Item1 > 0)
+        AStarGrid.AstarTile tile = Grid.GetCell(x, y);
+        if (tile.NSolids > 0)
             return true;
         return false;
     }
@@ -72,7 +72,9 @@ public class Level
         {
             for (int x = 0; x < width; x++)
             {
-                if (x % 3 == 0 && y % 3 == 0)
+                if (x == 5 || y == 5)
+                    SetTileAt(x, y, 2);
+                else if (x % 3 == 0 && y % 3 == 0)
                     SetTileAt(x, y, 1);
                 else
                     SetTileAt(x, y, 0);

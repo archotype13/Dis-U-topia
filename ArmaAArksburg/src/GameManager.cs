@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-public class GameManager : ScreenObject // manages game state, turn order of entities, and the current level
+public sealed class GameManager : ScreenObject // manages game state, turn order of entities, and the current level
 {
     public Entity? Player;
     public Level? CurrentLevel;
@@ -11,6 +11,8 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
         PLAYER_TURN,
         NEW_TURN
     };
+
+    private ulong _ticks = 0;
 
     public override void Update(TimeSpan delta)
     {
@@ -49,8 +51,9 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
                         TickEntity(entity);
                 }
             }
+            _ticks++;
 
-            System.Console.WriteLine($"Elasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
+            System.Console.WriteLine($"Round {_ticks}\nElasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
 
             Player!.Ai!.Energy += 100; // add player energy
             CurrentState = GameState.PLAYER_TURN;
@@ -62,23 +65,6 @@ public class GameManager : ScreenObject // manages game state, turn order of ent
     {
         EntityAction action = entity.Ai!.Turn(entity);
         EntityPerformAction(entity, action, endTurnOnFail);
-        // ActionResult result = action.Perform(entity);
-        
-        // // handle results
-        // switch (result)
-        // {
-        //     case SucceededActionResult succeeded: // if succeeded, remove energy cost
-        //         entity.Ai.Energy -= succeeded.UsedEnergy;
-        //         break;
-        //     case FailedActionResult failed: // if failed return
-        //         if (endTurnOnFail)
-        //             entity.Ai.Energy = 0;
-        //         break;
-        //     case AlternativeActionResult alternativeAction:
-                
-        //         break;
-        //     default: break;
-        // }
     }
 
     private void EntityPerformAction(Entity entity, EntityAction action, bool endTurnOnFail = true) // performs an action for an entity and handles the results
