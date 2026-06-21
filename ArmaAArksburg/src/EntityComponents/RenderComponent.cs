@@ -1,4 +1,4 @@
-public class RenderComponent(ColoredGlyph appearance)
+public sealed class RenderComponent(ColoredGlyph appearance)
 {
     public ColoredGlyph Appearance = appearance;
     public void Draw(Point position, ICellSurface surface)

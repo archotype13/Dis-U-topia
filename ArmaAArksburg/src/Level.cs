@@ -1,15 +1,15 @@
-public class Level
+public sealed class Level
 {
     public struct Tile(int id)
     {
         public int Id = id;
     }
 
-    public int Width;
-    public int Height;
-    private Tile[] Tiles;
-    public List<Entity> Entities = [];
-    public AStarGrid Grid;
+    public int Width {get; private set;}
+    public int Height {get; private set;}
+    private Tile[] Tiles {get; set;}
+    public List<Entity> Entities {get; set;} = [];
+    public AStarGrid Grid {get; set;}
 
 
     public Tile GetTileAt(int x, int y)
@@ -21,13 +21,15 @@ public class Level
 
     public void SetTileAt(int x, int y, int tileId)
     {
+        // get rid of old tile data on the astar grid
         TileData oldTile = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
         Grid.SetCellSolid(x, y, oldTile.Solid);
-        Grid.SetCellMoveCost(x, y, false, oldTile.MoveCost);
+        Grid.SetCellMoveCost(x, y, -oldTile.MoveCost);
+        // add new data
         TileData newTile = Engine.Instance!.ContentManager.TilePallete[tileId];
         Tiles[x + y*Width] = new Tile(tileId);
         Grid.SetCellSolid(x, y, newTile.Solid);
-        Grid.SetCellMoveCost(x, y, true, newTile.MoveCost);
+        Grid.SetCellMoveCost(x, y, newTile.MoveCost);
     }
 
     public void SetTileAt(Point point, int tileId) { SetTileAt(point.X, point.Y, tileId); }
@@ -51,12 +53,25 @@ public class Level
 
     public bool IsSolidAt(Point point) {return IsSolidAt(point.X, point.Y);}
 
+    public List<Entity> GetEntitiesAt(Point point) // gets all the entities at a certain point
+    {
+        List<Entity> entities = [];
+        foreach (Entity entity in Entities)
+        {
+            if (entity.Position != null && entity.Position.Cords == point)
+                entities.Add(entity);
+        }
+        return entities;
+    }
+
     public void AddEntity(Entity entity) // change with a better system later
     {
         if (entity.Position != null && entity.Position.Solid)
         {
             Grid.SetCellSolid(entity.Position.Cords, true);
         }
+        if (entity.Door != null)
+            entity.Door.AddToLevel(entity, this);
         Entities.Add(entity);
     }
 
@@ -72,17 +87,38 @@ public class Level
         {
             for (int x = 0; x < width; x++)
             {
-                if (x == 5 || y == 5)
-                    SetTileAt(x, y, 2);
-                else if (x % 3 == 0 && y % 3 == 0)
-                    SetTileAt(x, y, 1);
+                if ( x % 6 == 0 || y % 6 == 0 ) // grid walls
+                {
+                    if ( (x % 3 == 0 && x % 6 != 0) || (y % 3 == 0 && y % 6 != 0 ) ) // place doors in centers of wall segments
+                    {
+                        SetTileAt(x, y, 0);
+                        // add door
+                        AddEntity(new Entity()
+                        {
+                            Name = "John Door",
+                            Position = new(x, y)
+                            {
+                                Solid = true
+                            },
+                            Render = new(new(Color.Brown, Color.Transparent, '+')),
+                            Door = new()
+                            {
+                                OpenAppearance = new(Color.Brown, Color.Transparent, '-'),
+                                ClosedAppearance = new(Color.Brown, Color.Transparent, '+')
+                            }
+                        }
+                        );
+                    }
+                    else                                                       // place walls
+                        SetTileAt(x, y, 1);
+                }
                 else
                     SetTileAt(x, y, 0);
             }
         }
 
         // add test entities
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 1; i++)
         {
             AddEntity(new Entity()
             {
@@ -94,7 +130,8 @@ public class Level
                 Render = new(new(Color.Yellow, Color.Transparent, '@')),
                 Ai = new DrunkAiComponent()
                 {
-                    Speed = 100
+                    Speed = 100,
+                    Energy = 100
                 }
             }
             );

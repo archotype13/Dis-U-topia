@@ -4,6 +4,11 @@ public class EntityAction
     {
         return new SucceededActionResult(0);
     }
+
+    protected int GetActionCost(int baseCost, int speed)
+    {
+        return Math.Max(baseCost * 100 / speed, 5 );
+    }
 }
 
 public class ActionResult

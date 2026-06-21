@@ -9,7 +9,8 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     public enum GameState
     {
         PLAYER_TURN,
-        NEW_TURN
+        NEW_TURN,
+        SELECTION
     };
 
     private ulong _ticks = 0;

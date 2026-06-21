@@ -75,8 +75,12 @@ public static class AStar
                 {
                     Point neighbor = (current.Point.X + x, current.Point.Y + y);
 
-                    // return early to ignore points that are the same as the current node, out of bounds, solid but not the target
-                    if ( neighbor == current.Point || !grid.IsInBounds(neighbor) || ( grid.GetCell(neighbor).NSolids >= 1 && neighbor != target) )
+                    // return early to ignore points that are the same as the current node, or out of bounds
+                    if ( neighbor == current.Point || !grid.IsInBounds(neighbor))
+                        continue;
+                    // check if the node is solid. The target is always counted as an open tile
+                    AStarGrid.AstarTile tile = grid.GetCell(neighbor);
+                    if (neighbor != target && tile.NSolids > tile.SolidThreshold)
                         continue;
 
                     // calculate the tentative g value taking in acount new move cost

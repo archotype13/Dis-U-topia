@@ -1,10 +1,17 @@
+Core features
+--------------------------------------------------------------------------------------
+
+selection
+
 doors
-    astar
-        add third item to astar grid for solid threshold. Doors increase the threshold
+    closing/opening doors as an interactable
+
 ui
 hp and fighting
     basic hp
     bodies
+    corpse data
+        determine stuff like corpse name and if solid
     melee
     ranged - maybe save for items
 items
@@ -12,12 +19,32 @@ items
     integrate with combat
 loading content
 saving and loading
-modular ai
-    maybe player shouldn't have ai
 
 world gen
 
-scrollable world view
+--------------------------------------------------------------------------------------
+Future features
+--------------------------------------------------------------------------------------
+modular ai
+    maybe player shouldn't have ai
+
+way to quickly change stuff with solids on astar grid when toggling an entities solid property
+added to level method on components?
+
+queued player actions
+    path to
+    auto explore
+
+scrollable world view???
+zooming???
+
 better component added function or certain variables changing
     stuff for like collision
 traps
+
+less weird doors
+
+grabbing (dragging)
+    immovable flag in position component that determines if something can be moved, and thus dragged
+    draggable component that determines if something can be grabbed and any movement penalties
+    dragger component that moves dragged objects when moving

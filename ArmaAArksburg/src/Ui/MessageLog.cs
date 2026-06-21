@@ -1,4 +1,4 @@
-public class MessageLog : Console
+public sealed class MessageLog : Console
 {
     public void LogMessage(string message) // logs a message into the log
     {

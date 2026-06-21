@@ -1,4 +1,4 @@
-public class PositionComponent(int x, int y)
+public sealed class PositionComponent(int x, int y)
 {
     public Point Cords {get; set;} = (x, y);
     public bool Solid {get; set;} = false;
