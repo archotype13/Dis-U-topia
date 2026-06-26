@@ -1,4 +1,4 @@
-public sealed class PositionComponent(int x, int y)
+public sealed class PositionComponent(int x, int y) : EntityComponent
 {
     public Point Cords {get; set;} = (x, y);
     public bool Solid {get; set;} = false;
@@ -25,4 +25,10 @@ public sealed class PositionComponent(int x, int y)
     }
 
     public bool Move(Point point) {return Move(point.X, point.Y);}
+
+
+    public override void AddToLevel(Entity owner, Level level)
+    {
+        level.Grid.SetCellSolid(Cords, true);
+    }
 }

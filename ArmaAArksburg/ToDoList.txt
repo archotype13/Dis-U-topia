@@ -6,6 +6,8 @@ selection
 doors
     closing/opening doors as an interactable
 
+saving and loading
+
 ui
 hp and fighting
     basic hp
@@ -18,15 +20,21 @@ items
     inventory
     integrate with combat
 loading content
-saving and loading
 
 world gen
 
 --------------------------------------------------------------------------------------
 Future features
 --------------------------------------------------------------------------------------
+
+input manager
+    direction selection
+    controls to change aand look up
+
 modular ai
     maybe player shouldn't have ai
+
+new drawing system
 
 way to quickly change stuff with solids on astar grid when toggling an entities solid property
 added to level method on components?
@@ -38,9 +46,8 @@ queued player actions
 scrollable world view???
 zooming???
 
-better component added function or certain variables changing
-    stuff for like collision
-traps
+movementManager
+    traps
 
 less weird doors
 

@@ -1,6 +1,6 @@
 using SadConsole.Input;
 
-public class AiComponent
+public class AiComponent : EntityComponent
 {
     public int Speed = 100;
     public int Quickness = 100;
@@ -9,6 +9,11 @@ public class AiComponent
     {
         Engine.Instance!.ScreenManager.Log.LogMessage($"It's {owner.Name} turn!");
         return new WaitAction();
+    }
+
+    public override void AddToLevel(Entity owner, Level level)
+    {
+        level.AIs.Add(owner);
     }
 }
 

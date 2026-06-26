@@ -1,4 +1,4 @@
-public sealed class DoorComponent
+public sealed class DoorComponent : EntityComponent
 {
     public ColoredGlyph OpenAppearance {get; set;} = new();
     public ColoredGlyph ClosedAppearance {get; set;} = new();
@@ -26,7 +26,7 @@ public sealed class DoorComponent
         return true;
     }
 
-    public void AddToLevel(Entity owner, Level level)
+    public override void AddToLevel(Entity owner, Level level)
     {
         if (owner.Position != null)
             level.Grid.SetCellSolidThreshold(owner.Position.Cords, 1);

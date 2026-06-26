@@ -43,7 +43,7 @@ public sealed class PathMoveAction(Point targetCords, int speed, int maxVisits =
     }
 }
 
-public sealed class ToggleDoor(Entity door, int quickness, bool open) : EntityAction // toggle a door's state
+public sealed class ToggleDoorAction(Entity door, int quickness, bool open) : EntityAction // toggle a door's state
 {
     private readonly Entity _door = door;
     private readonly int _quickness = quickness;
@@ -71,7 +71,7 @@ public sealed class MoveOrAttackAction(Point targetCords, int speed, int quickne
         foreach (Entity entity in entities)
         {
             if (_openDoors == true && entity.Door != null && !entity.Door.IsOpened) // open a closed door if possible
-                return new AlternativeActionResult(new ToggleDoor(entity, _quickness, true));
+                return new AlternativeActionResult(new ToggleDoorAction(entity, _quickness, true));
         }
 
         // if no doors or attackable entities can be found, move

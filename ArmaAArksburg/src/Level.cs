@@ -9,6 +9,7 @@ public sealed class Level
     public int Height {get; private set;}
     private Tile[] Tiles {get; set;}
     public List<Entity> Entities {get; set;} = [];
+    public List<Entity> AIs {get; set;} = [];
     public AStarGrid Grid {get; set;}
 
 
@@ -66,12 +67,9 @@ public sealed class Level
 
     public void AddEntity(Entity entity) // change with a better system later
     {
-        if (entity.Position != null && entity.Position.Solid)
-        {
-            Grid.SetCellSolid(entity.Position.Cords, true);
-        }
-        if (entity.Door != null)
-            entity.Door.AddToLevel(entity, this);
+        entity.Position?.AddToLevel(entity, this);
+        entity.Door?.AddToLevel(entity, this);
+        entity.Ai?.AddToLevel(entity, this);
         Entities.Add(entity);
     }
 

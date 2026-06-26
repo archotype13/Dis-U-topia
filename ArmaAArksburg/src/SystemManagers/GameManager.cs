@@ -43,11 +43,11 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         {
             long startTime = Stopwatch.GetTimestamp(); // get time for perfomance debugging
 
-            foreach (Entity entity in CurrentLevel!.Entities)
+            foreach (Entity entity in CurrentLevel!.AIs)
             {
-                if (entity != Player && entity.Ai != null)
+                if (entity != Player)
                 {
-                    entity.Ai.Energy += 100; // add their energy
+                    entity.Ai!.Energy += 100; // add their energy
                     while (entity.Ai.Energy > 0)
                         TickEntity(entity);
                 }
