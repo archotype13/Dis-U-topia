@@ -1,5 +1,3 @@
-using System.Buffers;
-
 public sealed class MoveAction(Point newCords, int speed) : EntityAction // uses the move system to move the entity
 {
     private readonly Point _newCords = newCords;
@@ -45,7 +43,7 @@ public sealed class PathMoveAction(Point targetCords, int speed, int maxVisits =
 
 public sealed class ToggleDoorAction(Entity door, int quickness, bool open) : EntityAction // toggle a door's state
 {
-    private readonly Entity _door = door;
+    private Entity _door = door;
     private readonly int _quickness = quickness;
     private readonly bool _open = open;
 

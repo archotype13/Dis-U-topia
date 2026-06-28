@@ -7,8 +7,8 @@ public sealed class MessageLog : Console
         {
             ColoredString parsedString = ColoredString.Parser.Parse(line);
             Cursor.Print(parsedString);
+            Cursor.NewLine();
         }
-        Cursor.NewLine();
     }
 
     public MessageLog(int x, int y, int width, int height) : base(width, height)

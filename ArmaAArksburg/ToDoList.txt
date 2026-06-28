@@ -1,11 +1,6 @@
 Core features
 --------------------------------------------------------------------------------------
 
-selection
-
-doors
-    closing/opening doors as an interactable
-
 saving and loading
 
 ui
@@ -16,10 +11,13 @@ hp and fighting
         determine stuff like corpse name and if solid
     melee
     ranged - maybe save for items
+    attributes for changing stats
 items
     inventory
     integrate with combat
 loading content
+
+update all components on start of turn
 
 world gen
 
@@ -55,3 +53,5 @@ grabbing (dragging)
     immovable flag in position component that determines if something can be moved, and thus dragged
     draggable component that determines if something can be grabbed and any movement penalties
     dragger component that moves dragged objects when moving
+
+seperate drawing and logic updates???

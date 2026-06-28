@@ -9,9 +9,11 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     public enum GameState
     {
         PLAYER_TURN,
+        TARGETING,
         NEW_TURN,
         SELECTION
     };
+    public Selector? Selector;
 
     private ulong _ticks = 0;
 
@@ -21,45 +23,58 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         {
             // redraw level
             Engine.Instance!.ScreenManager.WorldView.RedrawLevel(CurrentLevel);
-            TickRound();
+            Tick();
         }
         base.Update(delta);
     }
 
     // do turn order
-    private void TickRound()
+    private void Tick()
     {
-        if (CurrentState == GameState.PLAYER_TURN) // perform the player's turn to allow them to take their time
-        {
-            if (Player != null)
-            {
-                TickEntity(Player, false);
+        // perform the player's turn to allow them to take their time
+        if (CurrentState == GameState.PLAYER_TURN)
+            TickPlayerDecision();
 
-                if (Player.Ai!.Energy <= 0)
-                    CurrentState = GameState.NEW_TURN;
+        // tick through all the non-player entities to perform their turns
+        if (CurrentState == GameState.NEW_TURN)
+            TickNewRound();
+
+        // handle tile targeting!
+        if (CurrentState == GameState.TARGETING)
+            TickSelection();
+
+    }
+
+    private void TickPlayerDecision() // make player take actions and make decisions
+    {
+        if (Player != null)
+        {
+            if (Player.Ai!.Energy <= 0)
+                CurrentState = GameState.NEW_TURN;
+
+            TickEntity(Player, false);
+        }
+    }
+
+    private void TickNewRound() // let all entities take their turns and be ticked
+    {
+        long startTime = Stopwatch.GetTimestamp(); // get time for perfomance debugging
+
+        foreach (Entity entity in CurrentLevel!.AIs)
+        {
+            if (entity != Player)
+            {
+                entity.Ai!.Energy += 100; // add their energy
+                while (entity.Ai.Energy > 0)
+                    TickEntity(entity);
             }
         }
-        if (CurrentState == GameState.NEW_TURN) // tick through all the non-player entities to perform their turns
-        {
-            long startTime = Stopwatch.GetTimestamp(); // get time for perfomance debugging
+        _ticks++;
 
-            foreach (Entity entity in CurrentLevel!.AIs)
-            {
-                if (entity != Player)
-                {
-                    entity.Ai!.Energy += 100; // add their energy
-                    while (entity.Ai.Energy > 0)
-                        TickEntity(entity);
-                }
-            }
-            _ticks++;
+        System.Console.WriteLine($"Round {_ticks}\nElasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
 
-            System.Console.WriteLine($"Round {_ticks}\nElasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
-
-            Player!.Ai!.Energy += 100; // add player energy
-            CurrentState = GameState.PLAYER_TURN;
-        }
-
+        Player!.Ai!.Energy += 100; // add player energy
+        CurrentState = GameState.PLAYER_TURN;
     }
 
     private void TickEntity(Entity entity, bool endTurnOnFail = true) // performs a single entity's turn
@@ -68,7 +83,7 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         EntityPerformAction(entity, action, endTurnOnFail);
     }
 
-    private void EntityPerformAction(Entity entity, EntityAction action, bool endTurnOnFail = true) // performs an action for an entity and handles the results
+    public ActionResult EntityPerformAction(Entity entity, EntityAction action, bool endTurnOnFail = true) // performs an action for an entity and handles the results
     {
         ActionResult result = action.Perform(entity);
         
@@ -86,6 +101,18 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
                 EntityPerformAction(entity, alternativeAction.NewAction, endTurnOnFail);
                 break;
             default: break;
+        }
+        return result;
+    }
+
+    private void TickSelection() // ticks for player selection
+    {
+        if (Selector != null)
+        {
+            if (Selector.Select() == true)
+            {
+                CurrentState = GameState.PLAYER_TURN;
+            }
         }
     }
 }

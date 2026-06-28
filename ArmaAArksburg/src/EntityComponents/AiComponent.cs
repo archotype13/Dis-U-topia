@@ -47,12 +47,48 @@ public class PlayerAiComponent : AiComponent
             return new MoveOrAttackAction(dPos + owner.Position!.Cords, Speed, Quickness, true);
         }
         // waiting
-        if ( Engine.Keyboard.IsKeyPressed(Keys.NumPad5))
+        if ( Engine.Keyboard.IsKeyPressed(Keys.NumPad5) )
         {
             return new WaitAction();
         }
+        // toggling doors
+        if ( Engine.Keyboard.IsKeyPressed(Keys.C) ) // closing
+        {
+            ToggleDoorSelection(owner, false);
+            return new EntityAction();
+        }
+        if ( Engine.Keyboard.IsKeyPressed(Keys.O) ) // opening
+        {
+            ToggleDoorSelection(owner, true);
+            return new EntityAction();
+        }
         
         return new EntityAction();
+    }
+
+    public void ToggleDoorSelection(Entity owner, bool open)
+    {
+        Action<Point> action = (point) =>
+        {
+            point += owner.Position!.Cords;
+            foreach (Entity entity in Engine.Instance!.GameManager.CurrentLevel!.GetEntitiesAt(point) )
+            {
+                if ( entity.Door != null && entity.Door.IsOpened != open)
+                {
+                    ActionResult result = Engine.Instance!.GameManager.EntityPerformAction(owner, new ToggleDoorAction(entity, Quickness, open), open);
+                    // opening and closing messages
+                    if (result is SucceededActionResult)
+                        Engine.Instance!.ScreenManager.Log.LogMessage($"You {(open? "open" : "close")} the {entity.Name}");
+                    else
+                        Engine.Instance!.ScreenManager.Log.LogMessage($"The door doesn't budge");
+
+                    return;
+                }
+            }
+            Engine.Instance!.ScreenManager.Log.LogMessage($"There isn't anything to {(open? "open" : "close")} there");
+        };
+        Engine.Instance!.GameManager.Selector = new DirectionSelector(action);
+        Engine.Instance!.GameManager.CurrentState = GameManager.GameState.TARGETING;
     }
 }
 
