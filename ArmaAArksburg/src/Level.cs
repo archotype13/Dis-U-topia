@@ -1,16 +1,19 @@
-public sealed class Level
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Serialization;
+
+public sealed class Level : Persistant
 {
     public struct Tile(int id)
     {
         public int Id = id;
     }
 
-    public int Width {get; private set;}
-    public int Height {get; private set;}
-    private Tile[] Tiles {get; set;}
+    public int Width {get; private set;} = 0;
+    public int Height {get; private set;} = 0;
+    private Tile[] Tiles {get; set;} = [];
     public List<Entity> Entities {get; set;} = [];
     public List<Entity> AIs {get; set;} = [];
-    public AStarGrid Grid {get; set;}
+    public AStarGrid? Grid {get; set;}
 
 
     public Tile GetTileAt(int x, int y)
@@ -24,7 +27,7 @@ public sealed class Level
     {
         // get rid of old tile data on the astar grid
         TileData oldTile = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
-        Grid.SetCellSolid(x, y, oldTile.Solid);
+        Grid!.SetCellSolid(x, y, oldTile.Solid);
         Grid.SetCellMoveCost(x, y, -oldTile.MoveCost);
         // add new data
         TileData newTile = Engine.Instance!.ContentManager.TilePallete[tileId];
@@ -46,7 +49,7 @@ public sealed class Level
 
     public bool IsSolidAt(int x, int y)
     {
-        AStarGrid.AstarTile tile = Grid.GetCell(x, y);
+        AStarGrid.AstarTile tile = Grid!.GetCell(x, y);
         if (tile.NSolids > 0)
             return true;
         return false;
@@ -73,17 +76,12 @@ public sealed class Level
         Entities.Add(entity);
     }
 
-    public Level(int width, int height)
+    public void Init() // sets up the initial data of the level
     {
-        Width = width;
-        Height = height;
-        Tiles = new Tile[width * height];
-        Grid = new(Width, Height);
-
         // testing add solids
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < Height; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < Width; x++)
             {
                 if ( x % 6 == 0 || y % 6 == 0 ) // grid walls
                 {
@@ -121,12 +119,12 @@ public sealed class Level
             AddEntity(new Entity()
             {
                 Name = "John Doe",
-                Position = new(width / 2 + 1, height / 2)
+                Position = new(Width / 2 + 1, Height / 2)
                 {
                     Solid = true
                 },
                 Render = new(new(Color.Yellow, Color.Transparent, '@')),
-                Ai = new DrunkAiComponent()
+                Ai = new BasicAiComponent()
                 {
                     Speed = 100,
                     Energy = 100
@@ -152,4 +150,54 @@ public sealed class Level
 
         AddEntity(Engine.Instance!.GameManager.Player);
     }
+
+    public Level(int width, int height)
+    {
+        Width = width;
+        Height = height;
+        Tiles = new Tile[width * height];
+        Grid = new(Width, Height);
+    }
+
+    public override void Save(BinaryWriter writer)
+    {
+        // save tile data
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                writer.Write(GetTileAt(x, y).Id); // write tile id
+            }
+        }
+
+        // // save entities
+        writer.Write(Entities.Count - 1); // ignore player. This is added by the game manager
+        foreach (Entity entity in Entities)
+        {
+            if (entity != Engine.Instance!.GameManager.Player)
+                entity.Save(writer);
+        }
+    }
+
+    public override void Load(BinaryReader reader)
+    {
+        // load tile data
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                SetTileAt(x, y, reader.ReadInt32()); // set tile id
+            }
+        }
+
+        // // load entities
+        int entityCount = reader.ReadInt32();
+        for (int i = 0; i < entityCount; i++)
+        {
+            Entity entity = new();
+            entity.Load(reader);
+            AddEntity(entity);
+        }
+    }
+
 }

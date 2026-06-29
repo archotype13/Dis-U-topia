@@ -8,10 +8,20 @@ Builder
     .ConfigureFonts(true)
     .UseDefaultConsole()
     .OnStart(Startup)
+    .OnEnd(End)
     .Run();
 
 static void Startup(object? sender, GameHost host)
 {
     // create a new engine
     _ = new Engine();
+}
+
+
+static void End(object? sender, GameHost host)
+{
+    // Place your save states or resource cleanup code here
+    System.Console.WriteLine("Main window is closing. Performing cleanup...");
+    // manage saving
+    SaveManager.SaveGame();
 }

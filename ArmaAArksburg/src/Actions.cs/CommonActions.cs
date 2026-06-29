@@ -7,7 +7,7 @@ public sealed class MoveAction(Point newCords, int speed) : EntityAction // uses
         if (actor.Position != null)
         {
             if (actor.Position.Move(_newCords))
-                return new SucceededActionResult( GetActionCost(Engine.Instance!.GameManager.CurrentLevel!.Grid.GetCell(_newCords).MoveCost, _speed) );
+                return new SucceededActionResult( GetActionCost(Engine.Instance!.GameManager.CurrentLevel!.Grid!.GetCell(_newCords).MoveCost, _speed) );
                 // move energy is calculated by dividing by move cost of the tile by the speed divided by the average speed, speed limit is 5 energy points for 20 tiles per turn
 
         }
@@ -33,7 +33,7 @@ public sealed class PathMoveAction(Point targetCords, int speed, int maxVisits =
         if (actor.Position == null)
             return new FailedActionResult();
 
-        List<Point> path = AStar.GetPathTo(actor.Position!.Cords, _targetCords, Engine.Instance!.GameManager.CurrentLevel!.Grid, true, _maxVisits);
+        List<Point> path = AStar.GetPathTo(actor.Position!.Cords, _targetCords, Engine.Instance!.GameManager.CurrentLevel!.Grid!, true, _maxVisits);
         Engine.Instance.ScreenManager.WorldView.debugDrawPoints = path;
         if (path.Count > 0)
             return new AlternativeActionResult( new MoveAction(path.First(), _speed) );
@@ -87,7 +87,7 @@ public sealed class PathOrAttackAction(Point targetCords, int maxVisits, int spe
 
     public override ActionResult Perform(Entity actor)
     {
-        List<Point> path = AStar.GetPathTo(actor.Position!.Cords, _targetCords, Engine.Instance!.GameManager.CurrentLevel!.Grid, true, _maxVisits);
+        List<Point> path = AStar.GetPathTo(actor.Position!.Cords, _targetCords, Engine.Instance!.GameManager.CurrentLevel!.Grid!, true, _maxVisits);
         Engine.Instance.ScreenManager.WorldView.debugDrawPoints = path;
         if (path.Count > 0)
             return new AlternativeActionResult( new MoveOrAttackAction(path.First(), _speed, _quickness, _openDoors) );

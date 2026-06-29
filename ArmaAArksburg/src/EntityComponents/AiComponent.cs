@@ -5,6 +5,13 @@ public class AiComponent : EntityComponent
     public int Speed = 100;
     public int Quickness = 100;
     public int Energy = 0;
+    protected enum AiType
+    {
+        BLANK,
+        PLAYER,
+        BASIC
+    };
+
     public virtual EntityAction Turn(Entity owner)
     {
         Engine.Instance!.ScreenManager.Log.LogMessage($"It's {owner.Name} turn!");
@@ -14,6 +21,40 @@ public class AiComponent : EntityComponent
     public override void AddToLevel(Entity owner, Level level)
     {
         level.AIs.Add(owner);
+    }
+
+    public static AiComponent Create(BinaryReader reader)
+    {
+        AiType type = (AiType)reader.ReadInt32();
+        AiComponent ai;
+        switch (type)
+        {
+            case AiType.PLAYER:
+                ai = new PlayerAiComponent();
+                break;
+            case AiType.BASIC:
+                ai = new BasicAiComponent();
+                break;
+            default:
+                ai = new AiComponent();
+                break;
+        }
+        ai.Load(reader);
+        return ai;
+    }
+
+    public override void Save(BinaryWriter writer)
+    {
+        writer.Write(Speed);
+        writer.Write(Quickness);
+        writer.Write(Energy);
+    }
+
+    public override void Load(BinaryReader reader)
+    {
+        Speed = reader.ReadInt32();
+        Quickness = reader.ReadInt32();
+        Energy = reader.ReadInt32();
     }
 }
 
@@ -90,14 +131,26 @@ public class PlayerAiComponent : AiComponent
         Engine.Instance!.GameManager.Selector = new DirectionSelector(action);
         Engine.Instance!.GameManager.CurrentState = GameManager.GameState.TARGETING;
     }
+
+    public override void Save(BinaryWriter writer)
+    {
+        writer.Write((int)AiType.PLAYER);
+        base.Save(writer);
+    }
 }
 
-public class DrunkAiComponent : AiComponent
+public class BasicAiComponent : AiComponent
 {
     public override EntityAction Turn(Entity owner)
     {
         return new PathOrAttackAction(Engine.Instance!.GameManager.Player!.Position!.Cords, 100, owner.Ai!.Speed, owner.Ai.Quickness, true);
         // return new PathMoveAction(Engine.Instance!.GameManager.Player!.Position!.Cords, owner.Ai!.Speed, 100);
         // return new MoveAction(owner.Position!.Cords + (Engine.Rng.Next(0, 3) - 1, Engine.Rng.Next(0, 3) - 1), Speed);
+    }
+
+    public override void Save(BinaryWriter writer)
+    {
+        writer.Write((int)AiType.BASIC);
+        base.Save(writer);
     }
 }

@@ -15,7 +15,7 @@ public sealed class DoorComponent : EntityComponent
         if (owner.Position != null)
         {
             owner.Position.Solid = !IsOpened;
-            Engine.Instance!.GameManager.CurrentLevel!.Grid.SetCellSolid(owner.Position.Cords, !IsOpened);
+            Engine.Instance!.GameManager.CurrentLevel!.Grid!.SetCellSolid(owner.Position.Cords, !IsOpened);
             Engine.Instance!.GameManager.CurrentLevel!.Grid.SetCellSolidThreshold(owner.Position.Cords, IsOpened? -1 : 1);
         }
         if (owner.Render != null)
@@ -28,7 +28,25 @@ public sealed class DoorComponent : EntityComponent
 
     public override void AddToLevel(Entity owner, Level level)
     {
+        if (owner.Render != null)
+            owner.Render.Appearance = IsOpened? OpenAppearance : ClosedAppearance;
         if (owner.Position != null)
-            level.Grid.SetCellSolidThreshold(owner.Position.Cords, 1);
+            level.Grid!.SetCellSolidThreshold(owner.Position.Cords, 1);
+    }
+
+    public override void Save(BinaryWriter writer)
+    {
+        SaveManager.SaveColoredGlyph(OpenAppearance, writer);
+        SaveManager.SaveColoredGlyph(ClosedAppearance, writer);
+        writer.Write(IsOpened);
+        writer.Write(OpenCost);
+    }
+
+    public override void Load(BinaryReader reader)
+    {
+        OpenAppearance = SaveManager.LoadColoredGlyph(reader);
+        ClosedAppearance = SaveManager.LoadColoredGlyph(reader);
+        IsOpened = reader.ReadBoolean();
+        OpenCost = reader.ReadInt32();
     }
 }

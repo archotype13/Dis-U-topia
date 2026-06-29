@@ -11,4 +11,14 @@ public sealed class RenderComponent(ColoredGlyph appearance) : EntityComponent
             surface[position].Glyph = Appearance.Glyph;
         surface[position].Mirror = Appearance.Mirror;
     }
+
+    public override void Save(BinaryWriter writer)
+    {
+        SaveManager.SaveColoredGlyph(Appearance, writer);
+    }
+
+    public override void Load(BinaryReader reader)
+    {
+        Appearance = SaveManager.LoadColoredGlyph(reader);
+    }
 }

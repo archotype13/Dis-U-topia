@@ -115,4 +115,35 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
             }
         }
     }
+
+    public void Save(BinaryWriter writer)
+    {
+        writer.Write(_ticks);
+        Player!.Save(writer);
+        writer.Write(CurrentLevel != null);
+        if (CurrentLevel != null)
+        {
+            writer.Write(CurrentLevel.Width);
+            writer.Write(CurrentLevel.Height);
+            CurrentLevel?.Save(writer);
+        }
+        
+    }
+
+    public void Load(BinaryReader reader)
+    {
+        _ticks = reader.ReadUInt64();
+        System.Console.Write(_ticks);
+        Player = new();
+        Player.Load(reader);
+        if (reader.ReadBoolean() == true) // load level if there is one
+        {
+            int width = reader.ReadInt32();
+            int height = reader.ReadInt32();
+            CurrentLevel = new(width, height);
+            CurrentLevel.Load(reader);
+
+            CurrentLevel.AddEntity(Player); // add the player :3
+        }
+    }
 }

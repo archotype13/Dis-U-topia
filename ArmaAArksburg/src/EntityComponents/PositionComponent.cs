@@ -16,7 +16,7 @@ public sealed class PositionComponent(int x, int y) : EntityComponent
         // alter solids
         if (Solid)
         {
-            Engine.Instance.GameManager.CurrentLevel.Grid.SetCellSolid(Cords, false);
+            Engine.Instance.GameManager.CurrentLevel.Grid!.SetCellSolid(Cords, false);
             Engine.Instance.GameManager.CurrentLevel.Grid.SetCellSolid(x, y, true);
         }
         
@@ -29,6 +29,19 @@ public sealed class PositionComponent(int x, int y) : EntityComponent
 
     public override void AddToLevel(Entity owner, Level level)
     {
-        level.Grid.SetCellSolid(Cords, true);
+        level.Grid!.SetCellSolid(Cords, true);
     }
+
+    public override void Save(BinaryWriter writer)
+    {
+        SaveManager.SavePoint(Cords, writer);
+        writer.Write(Solid);
+    }
+
+    public override void Load(BinaryReader reader)
+    {
+        Cords = SaveManager.LoadPoint(reader);
+        Solid = reader.ReadBoolean();
+    }
+
 }
