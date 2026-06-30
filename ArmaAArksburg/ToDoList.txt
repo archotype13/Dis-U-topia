@@ -1,11 +1,6 @@
 Core features
 --------------------------------------------------------------------------------------
 
-saving and loading
-    open doors reappear as solid
-    loading and saving messages
-
-
 render ordering
 removing entities
 

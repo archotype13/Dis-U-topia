@@ -15,6 +15,9 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     };
     public Selector? Selector;
 
+    public const int MAX_MESSAGES = 50;
+    public List<string> LoggedMessages {get; private set;} = [];
+
     private ulong _ticks = 0;
 
     public override void Update(TimeSpan delta)
@@ -118,8 +121,11 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
 
     public void Save(BinaryWriter writer)
     {
+        // save ticks
         writer.Write(_ticks);
+        // save player
         Player!.Save(writer);
+        // save level
         writer.Write(CurrentLevel != null);
         if (CurrentLevel != null)
         {
@@ -127,13 +133,19 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
             writer.Write(CurrentLevel.Height);
             CurrentLevel?.Save(writer);
         }
-        
+        // save messages
+        writer.Write(LoggedMessages.Count);
+        foreach (string message in LoggedMessages)
+        {
+            writer.Write(message);
+        } 
     }
 
     public void Load(BinaryReader reader)
     {
+        // load the ticks
         _ticks = reader.ReadUInt64();
-        System.Console.Write(_ticks);
+        // load the player
         Player = new();
         Player.Load(reader);
         if (reader.ReadBoolean() == true) // load level if there is one
@@ -144,6 +156,13 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
             CurrentLevel.Load(reader);
 
             CurrentLevel.AddEntity(Player); // add the player :3
+        }
+        // load messages
+        int messageCount = reader.ReadInt32();
+        for (int i = 0; i < messageCount; i++)
+        {
+            LoggedMessages.Add(reader.ReadString());
+            Engine.Instance!.ScreenManager.Log.LogMessage(LoggedMessages[i], false);
         }
     }
 }

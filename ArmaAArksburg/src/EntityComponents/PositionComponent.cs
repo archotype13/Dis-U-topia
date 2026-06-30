@@ -29,7 +29,8 @@ public sealed class PositionComponent(int x, int y) : EntityComponent
 
     public override void AddToLevel(Entity owner, Level level)
     {
-        level.Grid!.SetCellSolid(Cords, true);
+        if (Solid)
+            level.Grid!.SetCellSolid(Cords, true);
     }
 
     public override void Save(BinaryWriter writer)

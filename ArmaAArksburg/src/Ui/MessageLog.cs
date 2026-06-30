@@ -1,6 +1,6 @@
 public sealed class MessageLog : Console
 {
-    public void LogMessage(string message) // logs a message into the log
+    public void LogMessage(string message, bool save = true) // logs a message into the log
     {
         Cursor.Print("- ");
         foreach (string line in message.Split('\n'))
@@ -8,6 +8,12 @@ public sealed class MessageLog : Console
             ColoredString parsedString = ColoredString.Parser.Parse(line);
             Cursor.Print(parsedString);
             Cursor.NewLine();
+        }
+
+        // saving
+        if (save)
+        {
+            Engine.Instance!.GameManager.LoggedMessages.Add(message);
         }
     }
 

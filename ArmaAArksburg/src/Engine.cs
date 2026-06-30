@@ -28,9 +28,5 @@ public sealed class Engine : ScreenObject
             GameManager.CurrentLevel = new(ScreenManager.WorldView.Width, ScreenManager.WorldView.Height);
             GameManager.CurrentLevel.Init();
         }
-            
-        
-        ScreenManager.Log.LogMessage("Hi there! this is a [c:r f:Yellow]SUPPPPERRRRRRRR[c:u] duper long log message!");
-        ScreenManager.Log.LogMessage("Hi there! this is a [c:r f:Yellow]SUPPPPERRRRRRRR[c:u] duper long log message!");
     }
 }
