@@ -1,7 +1,9 @@
 public sealed class WorldViewport : Console
 {
+    // public List<IRenderable> Renderables {get; private set;} = [];
+    private SortedDictionary<int, List<IRenderable>> Renderables = [];
     public List<Point> debugDrawPoints = [];
-    public void RedrawLevel(Level level)
+    public void RedrawLevel(Level level) // redraws the entire level
     {
         for (int y = 0; y < level.Height; y ++)
         {
@@ -11,12 +13,16 @@ public sealed class WorldViewport : Console
             }
         }
 
-        foreach (Entity entity in level.Entities)
+        // foreach (IRenderable renderable in Renderables)
+        // {
+        //     renderable.Render(Surface);
+        // }
+        // priority drawing for IRenderables
+        foreach (int i in Renderables.Keys)
         {
-            if (entity.Position != null && entity.Render != null)
+            foreach (IRenderable renderable in Renderables[i])
             {
-                if (Surface.Area.Contains(entity.Position.Cords))
-                    entity.Render.Draw(entity.Position.Cords, Surface);
+                renderable.Render(Surface);
             }
         }
 
@@ -26,6 +32,19 @@ public sealed class WorldViewport : Console
         }
 
         IsDirty = true;
+    }
+
+    public void AddRenderable(IRenderable renderable)
+    {
+        // create a list for the priority if there already isn't one
+        if ( !Renderables.ContainsKey(renderable.Priority) )
+            Renderables[renderable.Priority] = [];
+        // actually add the IRenderable
+        Renderables[renderable.Priority].Add(renderable);
+    }
+    public void RemoveRenderable(IRenderable renderable)
+    {
+        Renderables[renderable.Priority].Remove(renderable);
     }
 
 

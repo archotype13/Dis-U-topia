@@ -2,7 +2,6 @@ Core features
 --------------------------------------------------------------------------------------
 
 render ordering
-removing entities
 
 ui
 hp and fighting
@@ -36,6 +35,8 @@ modular ai
     maybe player shouldn't have ai
 
 new drawing system
+    give map and IRenderable?
+    particles
 
 way to quickly change stuff with solids on astar grid when toggling an entities solid property
 added to level method on components?

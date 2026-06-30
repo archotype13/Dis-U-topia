@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 
@@ -11,9 +12,9 @@ public sealed class Level : Persistant
     public int Width {get; private set;} = 0;
     public int Height {get; private set;} = 0;
     private Tile[] Tiles {get; set;} = [];
-    public List<Entity> Entities {get; set;} = [];
-    public List<Entity> AIs {get; set;} = [];
-    public AStarGrid? Grid {get; set;}
+    public List<Entity> Entities {get; private set;} = [];
+    private List<Entity> DeletionQueue {get; set;} = [];
+    public AStarGrid? Grid {get; private set;}
 
 
     public Tile GetTileAt(int x, int y)
@@ -71,9 +72,28 @@ public sealed class Level : Persistant
     public void AddEntity(Entity entity) // change with a better system later
     {
         entity.Position?.AddToLevel(entity, this);
+        entity.Render?.AddToLevel(entity, this);
         entity.Door?.AddToLevel(entity, this);
         entity.Ai?.AddToLevel(entity, this);
         Entities.Add(entity);
+    }
+
+    public void RemoveEntity(Entity entity)
+    {
+        DeletionQueue.Add(entity);
+        entity.Position?.RemoveFromLevel(entity, this);
+        entity.Render?.RemoveFromLevel(entity, this);
+        entity.Ai?.RemoveFromLevel(entity, this);
+        entity.Door?.RemoveFromLevel(entity, this);
+    }
+
+    public void FlushDeletedEntities() // clears out all of the delected enemies from the queue
+    {
+        foreach (Entity entity in DeletionQueue)
+        {
+            Entities.Remove(entity);
+        }
+        DeletionQueue.Clear();
     }
 
     public void Init() // sets up the initial data of the level
@@ -96,7 +116,7 @@ public sealed class Level : Persistant
                             {
                                 Solid = true
                             },
-                            Render = new(new(Color.Brown, Color.Transparent, '+')),
+                            Render = new(new(Color.Brown, Color.Transparent, '+'), 0),
                             Door = new()
                             {
                                 OpenAppearance = new(Color.Brown, Color.Transparent, '-'),
@@ -123,7 +143,7 @@ public sealed class Level : Persistant
                 {
                     Solid = true
                 },
-                Render = new(new(Color.Yellow, Color.Transparent, '@')),
+                Render = new(new(Color.Yellow, Color.Transparent, '@'), 0),
                 Ai = new BasicAiComponent()
                 {
                     Speed = 100,
@@ -132,16 +152,37 @@ public sealed class Level : Persistant
             }
             );
         }
+
+        AddEntity(new Entity()
+            {
+                Name = "test",
+                Position = new(6, 4)
+                {
+                    Solid = false
+                },
+                Render = new(new(Color.Yellow, Color.Transparent, '0'), 0),
+            }
+        );
+        AddEntity(new Entity()
+            {
+                Name = "test2",
+                Position = new(6, 4)
+                {
+                    Solid = false
+                },
+                Render = new(new(Color.Green, Color.Purple, '0'), -1),
+            }
+        );
         
 
         Engine.Instance!.GameManager.Player = new Entity()
         {
             Name = "Jane Doe",
-            Position = new(6, 5)
+            Position = new(6, 4)
             {
                 Solid = true
             },
-            Render = new(new(Color.Purple, Color.Transparent, '@')),
+            Render = new(new(Color.Purple, Color.Transparent, '@'), 100),
             Ai = new PlayerAiComponent()
             {
                 Speed = 100

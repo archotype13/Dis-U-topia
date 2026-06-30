@@ -6,7 +6,7 @@ public sealed class ContentManager
     {
         TilePallete.Add(0, new TileData() // empty tile
         {
-            Appearance = new ColoredGlyph(Color.DarkGray, Color.Black, 9 + 15*16)
+            Appearance = new ColoredGlyph(Color.DarkGray, Color.Transparent, 9 + 15*16)
         }
         );
         TilePallete.Add(1, new TileData() // wall

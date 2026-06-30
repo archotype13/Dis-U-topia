@@ -29,7 +29,7 @@ public sealed class Entity : Persistant
         }
         if (reader.ReadBoolean()) // check if render exists
         {
-            Render = new(new());
+            Render = new(new(), 0);
             Render.Load(reader);
         }
         if (reader.ReadBoolean()) // check if ai exists

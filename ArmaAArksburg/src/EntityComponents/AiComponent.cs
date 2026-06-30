@@ -18,11 +18,6 @@ public class AiComponent : EntityComponent
         return new WaitAction();
     }
 
-    public override void AddToLevel(Entity owner, Level level)
-    {
-        level.AIs.Add(owner);
-    }
-
     public static AiComponent Create(BinaryReader reader)
     {
         AiType type = (AiType)reader.ReadInt32();
@@ -146,6 +141,8 @@ public class BasicAiComponent : AiComponent
         return new PathOrAttackAction(Engine.Instance!.GameManager.Player!.Position!.Cords, 100, owner.Ai!.Speed, owner.Ai.Quickness, true);
         // return new PathMoveAction(Engine.Instance!.GameManager.Player!.Position!.Cords, owner.Ai!.Speed, 100);
         // return new MoveAction(owner.Position!.Cords + (Engine.Rng.Next(0, 3) - 1, Engine.Rng.Next(0, 3) - 1), Speed);
+        // Engine.Instance!.GameManager.CurrentLevel!.RemoveEntity(owner);
+        // return new WaitAction();
     }
 
     public override void Save(BinaryWriter writer)

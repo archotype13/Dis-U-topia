@@ -4,4 +4,9 @@ public abstract class EntityComponent : Persistant
     {
         
     }
+
+    public virtual void RemoveFromLevel(Entity owner, Level level)
+    {
+        
+    }
 }

@@ -36,11 +36,17 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     {
         // perform the player's turn to allow them to take their time
         if (CurrentState == GameState.PLAYER_TURN)
+        {
             TickPlayerDecision();
+            CurrentLevel?.FlushDeletedEntities();
+        }
 
         // tick through all the non-player entities to perform their turns
         if (CurrentState == GameState.NEW_TURN)
+        {
             TickNewRound();
+            CurrentLevel?.FlushDeletedEntities();
+        }
 
         // handle tile targeting!
         if (CurrentState == GameState.TARGETING)
@@ -63,9 +69,9 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     {
         long startTime = Stopwatch.GetTimestamp(); // get time for perfomance debugging
 
-        foreach (Entity entity in CurrentLevel!.AIs)
+        foreach (Entity entity in CurrentLevel!.Entities)
         {
-            if (entity != Player)
+            if (entity != Player && entity.Ai != null)
             {
                 entity.Ai!.Energy += 100; // add their energy
                 while (entity.Ai.Energy > 0)
