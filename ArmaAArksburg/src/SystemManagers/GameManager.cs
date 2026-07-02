@@ -39,14 +39,14 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         if (CurrentState == GameState.PLAYER_TURN)
         {
             TickPlayerDecision();
-            CurrentLevel?.FlushDeletedEntities();
+            CurrentLevel?.FlushEntities();
         }
 
         // tick through all the non-player entities to perform their turns
         if (CurrentState == GameState.NEW_TURN)
         {
             TickNewRound();
-            CurrentLevel?.FlushDeletedEntities();
+            CurrentLevel?.FlushEntities();
         }
 
         // handle tile targeting!

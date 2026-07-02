@@ -4,7 +4,8 @@ public sealed class DestructibleComponent : EntityComponent
     public int Hp {get; set;} = 1;
     public int Av {get; set;} = 0;
     public int Dv {get; set;} = 0;
-    public bool RequiresForced = false; // determines if the forced bool must be set to determine if there is a valid target. Useful for allowing doors and random objects to be destructible but also can be walked through without attacking
+    public bool RequiresForced {get; set;} = false; // determines if the forced bool must be set to determine if there is a valid target. Useful for allowing doors and random objects to be destructible but also can be walked through without attacking
+    public CorpseData? Corpse {get; set;} = null;
 
     public override void Save(BinaryWriter writer)
     {

@@ -4,8 +4,11 @@ Core features
 hp and fighting
     corpse data
         determine stuff like corpse name and if solid
+    bodies
     wall destruction
     attributes for changing stats???
+
+constants for layering
 
 logged messages don't need to save themselves. they can be saved inside of the logmessages method
 
@@ -15,7 +18,9 @@ ui
 
 items
     inventory
-    integrate with combat
+    weapons
+    armor
+    consumables
 
 main menu
     ability to reset engine to start new games
@@ -35,6 +40,8 @@ Future features
 
 Components saved in a list???
     allows for easier way to add new components
+
+Better adding and removing queue system for adding and removing stuff during a round
 
 input manager
     direction selection

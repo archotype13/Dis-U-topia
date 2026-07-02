@@ -14,6 +14,7 @@ public sealed class Level : Persistant
     private Tile[] Tiles {get; set;} = [];
     public List<Entity> Entities {get; private set;} = [];
     private List<Entity> DeletionQueue {get; set;} = [];
+    private List<Entity> AddQueue {get; set;} = [];
     public AStarGrid Grid {get; private set;}
 
 
@@ -69,10 +70,9 @@ public sealed class Level : Persistant
         return entities;
     }
 
-    public void AddEntity(Entity entity) // change with a better system later
+    public void AddEntity(Entity entity, bool init = false) // change with a better system later
     {
-        entity.AddToLevel(this);
-        Entities.Add(entity);
+        AddQueue.Add(entity);
     }
 
     public void RemoveEntity(Entity entity)
@@ -81,13 +81,19 @@ public sealed class Level : Persistant
         DeletionQueue.Add(entity);
     }
 
-    public void FlushDeletedEntities() // clears out all of the delected enemies from the queue
+    public void FlushEntities() // clears out all of the delected enemies from the queue and adds in new ones
     {
         foreach (Entity entity in DeletionQueue)
         {
             Entities.Remove(entity);
         }
         DeletionQueue.Clear();
+        foreach (Entity entity in AddQueue)
+        {
+            entity.AddToLevel(this);
+            Entities.Add(entity);
+        }
+        AddQueue.Clear();
     }
 
     public void Init() // sets up the initial data of the level
@@ -110,7 +116,7 @@ public sealed class Level : Persistant
                 //             {
                 //                 Solid = true
                 //             },
-                //             Render = new(new(Color.Brown, Color.Transparent, '+'), 0),
+                //             Render = new(new(Color.Brown, Color.Transparent, '+'), -1),
                 //             Destructible = new()
                 //             {
                 //                 RequiresForced = true
@@ -133,7 +139,7 @@ public sealed class Level : Persistant
         }
 
         // add test entities
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 1; i++)
         {
             AddEntity(new Entity()
             {
@@ -142,13 +148,14 @@ public sealed class Level : Persistant
                 {
                     Solid = true
                 },
-                Render = new(new(Color.Yellow, Color.Transparent, '@'), 0),
+                Render = new(new(Color.Yellow, Color.Transparent, '@'), 1),
                 Destructible = new()
                 {
                     MaxHp = 2,
                     Hp = 2,
                     Dv = 10,
-                    Av = 10
+                    Av = 10,
+                    Corpse = new() {CorpseName = "body of John Doe", Appearance = new(Color.Red, Color.Transparent, '%')}
                 },
                 Attack = new()
                 {
@@ -198,7 +205,8 @@ public sealed class Level : Persistant
                 MaxHp = 10,
                 Hp = 10,
                 Dv = 12,
-                Av = 10
+                Av = 10,
+                Corpse = new() {CorpseName = "your cadaver", Appearance = new(Color.Red, Color.Transparent, '%')}
             },
             Attack = new()
             {
@@ -211,6 +219,8 @@ public sealed class Level : Persistant
         };
 
         AddEntity(Engine.Instance!.GameManager.Player);
+
+        FlushEntities();
     }
 
     public Level(int width, int height)
@@ -260,6 +270,8 @@ public sealed class Level : Persistant
             entity.Load(reader);
             AddEntity(entity);
         }
+
+        FlushEntities();
     }
 
 }

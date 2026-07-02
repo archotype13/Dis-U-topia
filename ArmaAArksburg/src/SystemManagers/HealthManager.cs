@@ -20,7 +20,7 @@ public static class HealthManager // manages healing and damaging destructible a
 
     public static bool IsTargetable( Entity entity, bool forced ) // checks if an entity is a valid target
     {
-        if ( entity.Destructible != null && (!entity.Destructible.RequiresForced || forced) ) // check for a ALIVE destructible and if it needs forced or not
+        if ( entity.Destructible != null && (!entity.Destructible.RequiresForced || forced) ) // check for a destructible and if it needs forced or not
             return true;
 
         return false;
@@ -59,11 +59,30 @@ public static class HealthManager // manages healing and damaging destructible a
         Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{target.Name}[c:u] for [c:r f:Red]{damage} ({pierces})[c:u] points of damage ({target.Destructible.Hp}/{target.Destructible.MaxHp})");
 
         if ( !IsAlive(target.Destructible) )
-            KillEntity(target);
+            KillEntity<DestructibleComponent>(target);
     }
 
-    private static void KillEntity( Entity target ) // manages entity death
+    // private static void KillEntity( Entity target ) // manages entity death
+    // {
+    //     if (target.Destructible != null)
+    //         KillEntity<DestructibleComponent>(target);
+    // }
+
+    private static void KillEntity<Destructible>( Entity target ) // manages entity death for destructibles
     {
         Engine.Instance!.GameManager.CurrentLevel!.RemoveEntity(target);
+
+        // corpse data
+        if (target.Destructible!.Corpse != null && target.Position != null)
+        {
+            Entity corpse = new()
+            {
+                Name = target.Destructible!.Corpse.CorpseName,
+                Position = new(target.Position.Cords.X, target.Position.Cords.Y) {Solid = false},
+                Render = new(target.Destructible!.Corpse.Appearance, 0)
+            };
+
+            Engine.Instance!.GameManager.CurrentLevel!.AddEntity(corpse);
+        }
     }
 }
