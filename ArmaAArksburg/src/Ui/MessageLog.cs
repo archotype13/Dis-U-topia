@@ -2,7 +2,7 @@ public sealed class MessageLog : Console
 {
     public void LogMessage(string message, bool save = true) // logs a message into the log
     {
-        Cursor.Print("- ");
+        Cursor.Print("-");
         foreach (string line in message.Split('\n'))
         {
             ColoredString parsedString = ColoredString.Parser.Parse(line);

@@ -14,7 +14,7 @@ public sealed class Level : Persistant
     private Tile[] Tiles {get; set;} = [];
     public List<Entity> Entities {get; private set;} = [];
     private List<Entity> DeletionQueue {get; set;} = [];
-    public AStarGrid? Grid {get; private set;}
+    public AStarGrid Grid {get; private set;}
 
 
     public Tile GetTileAt(int x, int y)
@@ -71,20 +71,14 @@ public sealed class Level : Persistant
 
     public void AddEntity(Entity entity) // change with a better system later
     {
-        entity.Position?.AddToLevel(entity, this);
-        entity.Render?.AddToLevel(entity, this);
-        entity.Door?.AddToLevel(entity, this);
-        entity.Ai?.AddToLevel(entity, this);
+        entity.AddToLevel(this);
         Entities.Add(entity);
     }
 
     public void RemoveEntity(Entity entity)
     {
+        entity.RemoveFromLevel(this);
         DeletionQueue.Add(entity);
-        entity.Position?.RemoveFromLevel(entity, this);
-        entity.Render?.RemoveFromLevel(entity, this);
-        entity.Ai?.RemoveFromLevel(entity, this);
-        entity.Door?.RemoveFromLevel(entity, this);
     }
 
     public void FlushDeletedEntities() // clears out all of the delected enemies from the queue
@@ -103,38 +97,43 @@ public sealed class Level : Persistant
         {
             for (int x = 0; x < Width; x++)
             {
-                if ( x % 6 == 0 || y % 6 == 0 ) // grid walls
-                {
-                    if ( (x % 3 == 0 && x % 6 != 0) || (y % 3 == 0 && y % 6 != 0 ) ) // place doors in centers of wall segments
-                    {
-                        SetTileAt(x, y, 0);
-                        // add door
-                        AddEntity(new Entity()
-                        {
-                            Name = "John Door",
-                            Position = new(x, y)
-                            {
-                                Solid = true
-                            },
-                            Render = new(new(Color.Brown, Color.Transparent, '+'), 0),
-                            Door = new()
-                            {
-                                OpenAppearance = new(Color.Brown, Color.Transparent, '-'),
-                                ClosedAppearance = new(Color.Brown, Color.Transparent, '+')
-                            }
-                        }
-                        );
-                    }
-                    else                                                       // place walls
-                        SetTileAt(x, y, 1);
-                }
-                else
-                    SetTileAt(x, y, 0);
+                // if ( x % 6 == 0 || y % 6 == 0 ) // grid walls
+                // {
+                //     if ( (x % 3 == 0 && x % 6 != 0) || (y % 3 == 0 && y % 6 != 0 ) ) // place doors in centers of wall segments
+                //     {
+                //         SetTileAt(x, y, 0);
+                //         // add door
+                //         AddEntity(new Entity()
+                //         {
+                //             Name = "John Door",
+                //             Position = new(x, y)
+                //             {
+                //                 Solid = true
+                //             },
+                //             Render = new(new(Color.Brown, Color.Transparent, '+'), 0),
+                //             Destructible = new()
+                //             {
+                //                 RequiresForced = true
+                //             },
+                //             Door = new()
+                //             {
+                //                 OpenAppearance = new(Color.Brown, Color.Transparent, '-'),
+                //                 ClosedAppearance = new(Color.Brown, Color.Transparent, '+')
+                //             }
+                //         }
+                //         );
+                //     }
+                //     else                                                       // place walls
+                //         SetTileAt(x, y, 1);
+                // }
+                // else
+                //     SetTileAt(x, y, 0);
+                SetTileAt(x, y, 0);
             }
         }
 
         // add test entities
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 5; i++)
         {
             AddEntity(new Entity()
             {
@@ -144,6 +143,17 @@ public sealed class Level : Persistant
                     Solid = true
                 },
                 Render = new(new(Color.Yellow, Color.Transparent, '@'), 0),
+                Destructible = new()
+                {
+                    MaxHp = 2,
+                    Hp = 2,
+                    Dv = 10,
+                    Av = 10
+                },
+                Attack = new()
+                {
+                    Attack = new(){MinDamage = 1, MaxDamage = 4}
+                },
                 Ai = new BasicAiComponent()
                 {
                     Speed = 100,
@@ -156,7 +166,7 @@ public sealed class Level : Persistant
         AddEntity(new Entity()
             {
                 Name = "test",
-                Position = new(6, 4)
+                Position = new(6, 5)
                 {
                     Solid = false
                 },
@@ -166,7 +176,7 @@ public sealed class Level : Persistant
         AddEntity(new Entity()
             {
                 Name = "test2",
-                Position = new(6, 4)
+                Position = new(6, 5)
                 {
                     Solid = false
                 },
@@ -178,11 +188,22 @@ public sealed class Level : Persistant
         Engine.Instance!.GameManager.Player = new Entity()
         {
             Name = "Jane Doe",
-            Position = new(6, 4)
+            Position = new(3, 3)
             {
                 Solid = true
             },
             Render = new(new(Color.Purple, Color.Transparent, '@'), 100),
+            Destructible = new()
+            {
+                MaxHp = 10,
+                Hp = 10,
+                Dv = 12,
+                Av = 10
+            },
+            Attack = new()
+            {
+                Attack = new(){MinDamage = 1, MaxDamage = 6, Ap = 2, ToHit = 2}
+            },
             Ai = new PlayerAiComponent()
             {
                 Speed = 100

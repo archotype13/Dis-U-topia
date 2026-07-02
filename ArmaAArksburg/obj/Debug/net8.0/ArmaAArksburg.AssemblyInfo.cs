@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ArmaAArksburg")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63e5d108d2b52d4ae14409180bed951c8fe476ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f1b0e771323b30da58132f894fc7e1fe2518aea")]
 [assembly: System.Reflection.AssemblyProductAttribute("ArmaAArksburg")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ArmaAArksburg")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

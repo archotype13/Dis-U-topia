@@ -33,6 +33,12 @@ public sealed class PositionComponent(int x, int y) : EntityComponent
             level.Grid!.SetCellSolid(Cords, true);
     }
 
+    public override void RemoveFromLevel(Entity owner, Level level)
+    {
+        if (Solid) // remove solid from map if solid
+            level.Grid.SetCellSolid(Cords, false);
+    }
+
     public override void Save(BinaryWriter writer)
     {
         SaveManager.SavePoint(Cords, writer);

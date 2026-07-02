@@ -55,7 +55,7 @@ public sealed class ToggleDoorAction(Entity door, int quickness, bool open) : En
     }
 }
 
-public sealed class MoveOrAttackAction(Point targetCords, int speed, int quickness, bool openDoors) : EntityAction // default walking action for most AIs. Will either open a door, attack an enemy, or move depending on context
+public sealed class MoveOrAttackAction(Point targetCords, int speed, int quickness, bool openDoors, bool forced = false) : EntityAction // default walking action for most AIs. Will either open a door, attack an enemy, or move depending on context
 {
     private readonly Point _targetCords = targetCords;
     private readonly int _speed = speed;
@@ -68,7 +68,11 @@ public sealed class MoveOrAttackAction(Point targetCords, int speed, int quickne
 
         foreach (Entity entity in entities)
         {
-            if (_openDoors == true && entity.Door != null && !entity.Door.IsOpened) // open a closed door if possible
+            if (actor.Attack != null && HealthManager.IsTargetable(entity, forced)) // check for if the entity is a valid target to melee attack and has an actual melee attack
+            {
+                return new AlternativeActionResult( new AttackAction(entity, actor.Ai!.Quickness, 100, actor.Attack.Attack) );
+            }
+            else if (_openDoors == true && entity.Door != null && !entity.Door.IsOpened) // open a closed door if possible
                 return new AlternativeActionResult(new ToggleDoorAction(entity, _quickness, true));
         }
 
@@ -92,5 +96,19 @@ public sealed class PathOrAttackAction(Point targetCords, int maxVisits, int spe
         if (path.Count > 0)
             return new AlternativeActionResult( new MoveOrAttackAction(path.First(), _speed, _quickness, _openDoors) );
         return new FailedActionResult();
+    }
+}
+
+public sealed class AttackAction(Entity target, int quickness, int baseCost, AttackData attack) : EntityAction
+{
+    private readonly Entity Target = target;
+    private readonly int Quickness = quickness;
+    private readonly int BaseCost = baseCost;
+    private readonly AttackData Attack = attack;
+
+    public override ActionResult Perform(Entity actor)
+    {
+        HealthManager.DealDamage(Target, actor, Attack);
+        return new SucceededActionResult(GetActionCost(BaseCost, Quickness));
     }
 }

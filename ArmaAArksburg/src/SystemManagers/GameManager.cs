@@ -11,7 +11,8 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         PLAYER_TURN,
         TARGETING,
         NEW_TURN,
-        SELECTION
+        SELECTION,
+        GAME_OVER
     };
     public Selector? Selector;
 
@@ -58,6 +59,13 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     {
         if (Player != null)
         {
+            if (!HealthManager.IsAlive(Player)) // manage player death
+            {
+                CurrentState = GameState.GAME_OVER;
+                return;
+            }
+
+
             if (Player.Ai!.Energy <= 0)
                 CurrentState = GameState.NEW_TURN;
 

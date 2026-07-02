@@ -1,42 +1,51 @@
 Core features
 --------------------------------------------------------------------------------------
 
-render ordering
-
-ui
 hp and fighting
-    basic hp
-    bodies
     corpse data
         determine stuff like corpse name and if solid
-    melee
-    ranged - maybe save for items
-    attributes for changing stats
+    wall destruction
+    attributes for changing stats???
+
+logged messages don't need to save themselves. they can be saved inside of the logmessages method
+
+ui
+    healing
+            regen
+
 items
     inventory
     integrate with combat
 
 main menu
-loading content
+    ability to reset engine to start new games
 
-update all components on start of turn
+ranged weapons
+
+loading content
+update all components on start of turn?
 
 world gen
+content
+balancing
 
 --------------------------------------------------------------------------------------
 Future features
 --------------------------------------------------------------------------------------
 
+Components saved in a list???
+    allows for easier way to add new components
+
 input manager
     direction selection
-    controls to change aand look up
+    controls to change and look up
 
 modular ai
     maybe player shouldn't have ai
 
 new drawing system
-    give map and IRenderable?
-    particles
+    give map an IRenderable?
+    particles!!!
 
 way to quickly change stuff with solids on astar grid when toggling an entities solid property
 added to level method on components?
@@ -51,11 +60,13 @@ zooming???
 movementManager
     traps
 
-less weird doors
-
 grabbing (dragging)
     immovable flag in position component that determines if something can be moved, and thus dragged
     draggable component that determines if something can be grabbed and any movement penalties
     dragger component that moves dragged objects when moving
 
 seperate drawing and logic updates???
+
+breeds
+    save space on shared data
+    presets for certain data to be stored in for objects (IE: tags)

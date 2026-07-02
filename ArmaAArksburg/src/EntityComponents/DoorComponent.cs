@@ -34,6 +34,12 @@ public sealed class DoorComponent : EntityComponent
             level.Grid!.SetCellSolidThreshold(owner.Position.Cords, 1);
     }
 
+    public override void RemoveFromLevel(Entity owner, Level level)
+    {
+        if (owner.Position != null && IsOpened) // remove solid threshhold if open
+            level.Grid!.SetCellSolidThreshold(owner.Position.Cords, -1);
+    }
+
     public override void Save(BinaryWriter writer)
     {
         SaveManager.SaveColoredGlyph(OpenAppearance, writer);
