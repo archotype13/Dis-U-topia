@@ -2,19 +2,16 @@ Core features
 --------------------------------------------------------------------------------------
 
 hp and fighting
-    corpse data
-        determine stuff like corpse name and if solid
-    bodies
-    wall destruction
+    ui
+    defense data
+    healing
+            regen
     attributes for changing stats???
+    wall destruction
 
 constants for layering
 
 logged messages don't need to save themselves. they can be saved inside of the logmessages method
-
-ui
-    healing
-            regen
 
 items
     inventory
@@ -28,6 +25,7 @@ main menu
 ranged weapons
 
 loading content
+    cloning
 update all components on start of turn?
 
 world gen
@@ -37,6 +35,10 @@ balancing
 --------------------------------------------------------------------------------------
 Future features
 --------------------------------------------------------------------------------------
+
+targeting specific limbs
+
+I think combat runs super slow???
 
 Components saved in a list???
     allows for easier way to add new components

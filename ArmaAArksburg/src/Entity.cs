@@ -4,6 +4,7 @@ public sealed class Entity : Persistant
     public PositionComponent? Position {get; set;}
     public RenderComponent? Render {get; set;}
     public DestructibleComponent? Destructible {get; set;}
+    public BodyComponent? Body {get; set;}
     public AttackComponent? Attack {get; set;}
     public AiComponent? Ai {get; set;}
     public DoorComponent? Door {get; set;}
@@ -13,6 +14,7 @@ public sealed class Entity : Persistant
         Position?.AddToLevel(this, level);
         Render?.AddToLevel(this, level);
         Destructible?.AddToLevel(this, level);
+        Body?.AddToLevel(this, level);
         Attack?.AddToLevel(this, level);
         Door?.AddToLevel(this, level);
         Ai?.AddToLevel(this, level);
@@ -23,6 +25,7 @@ public sealed class Entity : Persistant
         Position?.RemoveFromLevel(this, level);
         Render?.RemoveFromLevel(this, level);
         Destructible?.RemoveFromLevel(this, level);
+        Body?.RemoveFromLevel(this, level);
         Attack?.AddToLevel(this, level);
         Door?.RemoveFromLevel(this, level);
         Ai?.RemoveFromLevel(this, level);
@@ -37,6 +40,8 @@ public sealed class Entity : Persistant
         Render?.Save(writer);
         writer.Write(Destructible != null);  // Destructible
         Destructible?.Save(writer);
+        writer.Write(Body != null);          // Body
+        Body?.Save(writer);
         writer.Write(Attack != null);        // Attack
         Attack?.Save(writer);
         writer.Write(Ai != null);            // Ai
@@ -62,6 +67,11 @@ public sealed class Entity : Persistant
         {
             Destructible = new();
             Destructible.Load(reader);
+        }
+        if (reader.ReadBoolean()) // check if body exists
+        {
+            Body = new();
+            Body.Load(reader);
         }
         if (reader.ReadBoolean()) // check if attack exists
         {

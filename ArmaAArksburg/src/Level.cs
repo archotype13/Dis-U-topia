@@ -1,5 +1,6 @@
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml.Serialization;
 
 public sealed class Level : Persistant
@@ -149,13 +150,50 @@ public sealed class Level : Persistant
                     Solid = true
                 },
                 Render = new(new(Color.Yellow, Color.Transparent, '@'), 1),
-                Destructible = new()
+                Body = new()
                 {
-                    MaxHp = 2,
-                    Hp = 2,
-                    Dv = 10,
-                    Av = 10,
-                    Corpse = new() {CorpseName = "body of John Doe", Appearance = new(Color.Red, Color.Transparent, '%')}
+                    Corpse = new(){CorpseName = "John corpse", Appearance = new(Color.Red, Color.Transparent, '%')},
+                    RootLimb = new()
+                    {
+                        Name = "torso",
+                        MaxHp = 40,
+                        Hp = 40,
+                        Vital = true,
+                        ChildLimbs = 
+                        [
+                            new()
+                            {
+                                Name = "head",
+                                MaxHp = 30,
+                                Hp = 30,
+                                Vital = true
+                            },
+                            new()
+                            {
+                                Name = "left arm",
+                                MaxHp = 30,
+                                Hp = 30
+                            },
+                            new()
+                            {
+                                Name = "right arm",
+                                MaxHp = 30,
+                                Hp = 30,
+                            },
+                            new()
+                            {
+                                Name = "left leg",
+                                MaxHp = 30,
+                                Hp = 30,
+                            },
+                            new()
+                            {
+                                Name = "right leg",
+                                MaxHp = 30,
+                                Hp = 30,
+                            }
+                        ]
+                    }
                 },
                 Attack = new()
                 {
@@ -170,28 +208,6 @@ public sealed class Level : Persistant
             );
         }
 
-        AddEntity(new Entity()
-            {
-                Name = "test",
-                Position = new(6, 5)
-                {
-                    Solid = false
-                },
-                Render = new(new(Color.Yellow, Color.Transparent, '0'), 0),
-            }
-        );
-        AddEntity(new Entity()
-            {
-                Name = "test2",
-                Position = new(6, 5)
-                {
-                    Solid = false
-                },
-                Render = new(new(Color.Green, Color.Purple, '0'), -1),
-            }
-        );
-        
-
         Engine.Instance!.GameManager.Player = new Entity()
         {
             Name = "Jane Doe",
@@ -200,13 +216,53 @@ public sealed class Level : Persistant
                 Solid = true
             },
             Render = new(new(Color.Purple, Color.Transparent, '@'), 100),
-            Destructible = new()
+            Body = new()
             {
-                MaxHp = 10,
-                Hp = 10,
-                Dv = 12,
-                Av = 10,
-                Corpse = new() {CorpseName = "your cadaver", Appearance = new(Color.Red, Color.Transparent, '%')}
+                DvMod = 5,
+                Corpse = new(){CorpseName = "your cadaver", Appearance = new(Color.Red, Color.Transparent, '%')},
+                RootLimb = new()
+                {
+                    Name = "torso",
+                    MaxHp = 40,
+                    Hp = 40,
+                    Av = 12,
+                    Dv = -1,
+                    Vital = true,
+                    ChildLimbs = 
+                    [
+                        new()
+                        {
+                            Name = "head",
+                            MaxHp = 30,
+                            Hp = 30,
+                            Vital = true
+                        },
+                        new()
+                        {
+                            Name = "left arm",
+                            MaxHp = 30,
+                            Hp = 30
+                        },
+                        new()
+                        {
+                            Name = "right arm",
+                            MaxHp = 30,
+                            Hp = 30,
+                        },
+                        new()
+                        {
+                            Name = "left leg",
+                            MaxHp = 30,
+                            Hp = 30,
+                        },
+                        new()
+                        {
+                            Name = "right leg",
+                            MaxHp = 30,
+                            Hp = 30,
+                        }
+                    ]
+                }
             },
             Attack = new()
             {

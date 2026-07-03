@@ -1,3 +1,5 @@
+using System.Numerics;
+
 public static class HealthManager // manages healing and damaging destructible and body components
 {
     // balancing constants
@@ -5,10 +7,18 @@ public static class HealthManager // manages healing and damaging destructible a
     const int AV_ROLL_MAX = 20;
     const int DV_ROLL_MAX = 20;
 
-
-    public static bool IsAlive( Entity entity ) // checks an entity for if they are dead or not. Returns true if it doesn't have a valid component to check
+    private struct AttackResult(int damage, int pierces, bool missed)
     {
-        if ( entity.Destructible != null ) // if the entity has a destructible, use the correct overload
+        public int Damage = damage;
+        public int Pierces = pierces;
+        public bool Missed = missed;
+    }
+
+    public static bool IsAlive( Entity entity ) // determines if a destructible is alive or not
+    {
+        if (entity.Body != null)
+            return entity.Body.IsAlive;
+        if (entity.Destructible != null)
             return IsAlive(entity.Destructible);
         return true;
     }
@@ -22,22 +32,85 @@ public static class HealthManager // manages healing and damaging destructible a
     {
         if ( entity.Destructible != null && (!entity.Destructible.RequiresForced || forced) ) // check for a destructible and if it needs forced or not
             return true;
+        if ( entity.Body != null && (!entity.Body.RequiresForced || forced) ) // check for a body and if it needs forced or not
+            return true;
 
         return false;
     }
 
     public static void DealDamage( Entity target, Entity attacker, AttackData attackData ) // determines what components to deal damage to
     {
-        if (target.Destructible != null)
-            DealDamage<DestructibleComponent>(target, attacker, attackData);
+        if (target.Body != null)
+            DealDamage(target, target.Body, attacker, attackData);
+        else if (target.Destructible != null)
+            DealDamage(target, target.Destructible, attacker, attackData);
     }
 
-    private static void DealDamage<DestructibleComponent>( Entity target, Entity attacker, AttackData attackData ) // deals damage to destructibles
+    private static void DealDamage( Entity target, DestructibleComponent destructible, Entity attacker, AttackData attackData ) // deals damage to destructibles
+    {
+        AttackResult result = GetAttackResult(attackData, destructible!.Av, destructible!.Dv);
+
+        if (result.Missed)
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] misses");
+            return;
+        }
+
+        if (result.Pierces == 0)
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}'s[c:u] attack fails to pierce the armor of [c:r f:Yellow]{target.Name}[c:u]");
+            return;
+        }
+
+        target.Destructible!.Hp -= result.Damage;
+        Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{target.Name}[c:u] for [c:r f:Red]{result.Damage} ({result.Pierces})[c:u] points of damage ({target.Destructible.Hp}/{target.Destructible.MaxHp})");
+
+        if ( !IsAlive(destructible) )
+            KillEntity(target, destructible.Corpse);
+    }
+
+    private static void DealDamage( Entity target, BodyComponent body, Entity attacker, AttackData attackData ) // deals damage to bodies. Currently targets a random limb
+    {
+        List<LimbData> limbs = [];
+        BodyComponent.GetAllLimbs(limbs, body.RootLimb);
+        int index = Engine.Rng.Next(0, limbs.Count);
+        DealDamage(target, body, limbs[index], attacker, attackData);
+    }
+
+    private static void DealDamage(Entity target, BodyComponent body, LimbData limb, Entity attacker, AttackData attackData) // deals damage to a certain limb
+    {
+        AttackResult result = GetAttackResult(attackData, limb.Av, limb.Dv + body.DvMod);
+
+        if (result.Missed)
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] misses");
+            return;
+        }
+
+        if (result.Pierces == 0)
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}'s[c:u] attack fails to pierce the armor of [c:r f:Yellow]{target.Name}'s {limb.Name}[c:u]");
+            return;
+        }
+
+        limb.Hp -= result.Damage;
+        Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{target.Name}'s {limb.Name}[c:u] for [c:r f:Red]{result.Damage} ({result.Pierces})[c:u] points of damage ({limb.Hp}/{limb.MaxHp})");
+
+        // handle death
+        if ( limb.Vital && limb.Hp <= 0 )
+        {
+            body.IsAlive = false;
+            KillEntity(target, body.Corpse);
+        }
+            
+    }
+
+    private static AttackResult GetAttackResult(AttackData attack, int av, int dv) // determines the amount of damage something takes
     {
         // dv roll
-        if (Engine.Rng.Next(0, DV_ROLL_MAX) + attackData.ToHit < target.Destructible!.Dv)
+        if (Engine.Rng.Next(0, DV_ROLL_MAX) + attack.ToHit < dv)
         {
-            Engine.Instance!.ScreenManager.Log.LogMessage($"{attacker.Name} misses!");
+            return new(0, 0, true);
         }
 
         int damage = 0;
@@ -47,39 +120,29 @@ public static class HealthManager // manages healing and damaging destructible a
         for (int i = 0; i < N_AV_ROLLS; i++)
         {
             int roll = Engine.Rng.Next(0, AV_ROLL_MAX + 1);
-            if (roll + attackData.Ap >= target.Destructible!.Av || roll == AV_ROLL_MAX) // only hit if the attack pierces armor or crits
+            if (roll + attack.Ap >= av || roll == AV_ROLL_MAX) // only hit if the attack pierces armor or crits
             {
-                damage += Engine.Rng.Next(attackData.MinDamage, attackData.MaxDamage + 1);
+                damage += Engine.Rng.Next(attack.MinDamage, attack.MaxDamage + 1);
                 pierces++;
             }
                 
         }
 
-        target.Destructible!.Hp -= damage;
-        Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{target.Name}[c:u] for [c:r f:Red]{damage} ({pierces})[c:u] points of damage ({target.Destructible.Hp}/{target.Destructible.MaxHp})");
-
-        if ( !IsAlive(target.Destructible) )
-            KillEntity<DestructibleComponent>(target);
+        return new(damage, pierces, false);
     }
 
-    // private static void KillEntity( Entity target ) // manages entity death
-    // {
-    //     if (target.Destructible != null)
-    //         KillEntity<DestructibleComponent>(target);
-    // }
-
-    private static void KillEntity<Destructible>( Entity target ) // manages entity death for destructibles
+    private static void KillEntity( Entity target, CorpseData? corpseData ) // manages entity death for destructibles
     {
         Engine.Instance!.GameManager.CurrentLevel!.RemoveEntity(target);
 
         // corpse data
-        if (target.Destructible!.Corpse != null && target.Position != null)
+        if (corpseData != null && target.Position != null)
         {
             Entity corpse = new()
             {
-                Name = target.Destructible!.Corpse.CorpseName,
+                Name = corpseData.CorpseName,
                 Position = new(target.Position.Cords.X, target.Position.Cords.Y) {Solid = false},
-                Render = new(target.Destructible!.Corpse.Appearance, 0)
+                Render = new(corpseData.Appearance, 0)
             };
 
             Engine.Instance!.GameManager.CurrentLevel!.AddEntity(corpse);
