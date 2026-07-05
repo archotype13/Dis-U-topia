@@ -17,12 +17,11 @@ public sealed class BodyComponent : EntityComponent
 
     public override void AddToLevel(Entity owner, Level level)
     {
-        List<LimbData> limbs = [];
-        GetAllLimbs(limbs, RootLimb);
-
-        System.Console.WriteLine($"{owner.Name}'s body\nLimb count: {limbs.Count}");
-        DebugPrintStatus();
-        System.Console.Write('\n');
+        // List<LimbData> limbs = [];
+        // GetAllLimbs(limbs, RootLimb);
+        // System.Console.WriteLine($"{owner.Name}'s body\nLimb count: {limbs.Count}");
+        // DebugPrintStatus();
+        // System.Console.Write('\n');
     }
 
     public void DebugPrintStatus() // begins to print the data of all of the limbs

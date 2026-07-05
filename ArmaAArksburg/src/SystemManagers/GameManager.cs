@@ -52,7 +52,6 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         // handle tile targeting!
         if (CurrentState == GameState.TARGETING)
             TickSelection();
-
     }
 
     private void TickPlayerDecision() // make player take actions and make decisions
@@ -162,6 +161,7 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         // load the player
         Player = new();
         Player.Load(reader);
+        Engine.Instance!.ScreenManager.PlayerHealthDisplay.SetLimbs(Player.Body!); // temp stuff for getting hp set up
         if (reader.ReadBoolean() == true) // load level if there is one
         {
             int width = reader.ReadInt32();

@@ -1,5 +1,3 @@
-using System.Numerics;
-
 public static class HealthManager // manages healing and damaging destructible and body components
 {
     // balancing constants
@@ -73,8 +71,9 @@ public static class HealthManager // manages healing and damaging destructible a
     {
         List<LimbData> limbs = [];
         BodyComponent.GetAllLimbs(limbs, body.RootLimb);
-        int index = Engine.Rng.Next(0, limbs.Count);
-        DealDamage(target, body, limbs[index], attacker, attackData);
+        List<LimbData> aliveLimbs = [.. limbs.Where(limb => limb.Hp > 0)];
+        int index = Engine.Rng.Next(0, aliveLimbs.Count);
+        DealDamage(target, body, aliveLimbs[index], attacker, attackData);
     }
 
     private static void DealDamage(Entity target, BodyComponent body, LimbData limb, Entity attacker, AttackData attackData) // deals damage to a certain limb

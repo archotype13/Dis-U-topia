@@ -210,7 +210,7 @@ public sealed class Level : Persistant
 
         Engine.Instance!.GameManager.Player = new Entity()
         {
-            Name = "Jane Doe",
+            Name = "Player",
             Position = new(3, 3)
             {
                 Solid = true
@@ -275,6 +275,7 @@ public sealed class Level : Persistant
         };
 
         AddEntity(Engine.Instance!.GameManager.Player);
+        Engine.Instance!.ScreenManager.PlayerHealthDisplay.SetLimbs(Engine.Instance!.GameManager.Player.Body);
 
         FlushEntities();
     }
