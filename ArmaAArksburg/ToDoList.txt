@@ -1,24 +1,19 @@
 Core features
 --------------------------------------------------------------------------------------
 
-hp and fighting
-    defense data
-    wall destruction
+targeting specific limbs
 
 status effects
-attributes for changing stats???
-
-targeting specific limbs
+    deal flat damage
 
 healing
     regen
 
 constants for layering
 
-logged messages don't need to save themselves. they can be saved inside of the logmessages method
-
 fov
     recalculated at the start of the player's action and whenever they take an action
+    ui works the same way
 
 items
     inventory
@@ -35,6 +30,9 @@ loading content
     cloning
 update all components on start of turn?
 
+tool tips
+    check whats on a tile
+
 world gen
 content
 balancing
@@ -42,8 +40,6 @@ balancing
 --------------------------------------------------------------------------------------
 Future features
 --------------------------------------------------------------------------------------
-
-tool tips
 
 I think combat runs super slow???
 

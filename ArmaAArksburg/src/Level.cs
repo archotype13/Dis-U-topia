@@ -1,13 +1,9 @@
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
-using System.Xml.Serialization;
-
 public sealed class Level : Persistant
 {
-    public struct Tile(int id)
+    public struct Tile(int id, int hp)
     {
         public int Id = id;
+        public int Hp = hp;
     }
 
     public int Width {get; private set;} = 0;
@@ -26,20 +22,26 @@ public sealed class Level : Persistant
 
     public Tile GetTileAt(Point point) { return GetTileAt(point.X, point.Y); }
 
-    public void SetTileAt(int x, int y, int tileId)
+    public void SetTileAt(int x, int y, int tileId, int forcedHp = -1) // if forced hp is not -1, hp will be set to the forced hp value
     {
         // get rid of old tile data on the astar grid
         TileData oldTile = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
-        Grid!.SetCellSolid(x, y, oldTile.Solid);
+        Grid!.SetCellSolid(x, y, !oldTile.Solid);
         Grid.SetCellMoveCost(x, y, -oldTile.MoveCost);
         // add new data
-        TileData newTile = Engine.Instance!.ContentManager.TilePallete[tileId];
-        Tiles[x + y*Width] = new Tile(tileId);
-        Grid.SetCellSolid(x, y, newTile.Solid);
-        Grid.SetCellMoveCost(x, y, newTile.MoveCost);
+        TileData newTileData = Engine.Instance!.ContentManager.TilePallete[tileId];
+        Tile newTile = new(tileId, (forcedHp == -1)? newTileData.Hp : forcedHp);
+        Tiles[x + y*Width] = newTile;
+        Grid.SetCellSolid(x, y, newTileData.Solid);
+        Grid.SetCellMoveCost(x, y, newTileData.MoveCost);
     }
 
     public void SetTileAt(Point point, int tileId) { SetTileAt(point.X, point.Y, tileId); }
+
+    public void SetTileHealth(Point point, int newHealth)
+    {
+        Tiles[point.X + point.Y*Width].Hp = newHealth;
+    }
 
     public bool IsInBounds(int x, int y) // returns true if the point is in bounds
     {
@@ -104,38 +106,38 @@ public sealed class Level : Persistant
         {
             for (int x = 0; x < Width; x++)
             {
-                // if ( x % 6 == 0 || y % 6 == 0 ) // grid walls
-                // {
-                //     if ( (x % 3 == 0 && x % 6 != 0) || (y % 3 == 0 && y % 6 != 0 ) ) // place doors in centers of wall segments
-                //     {
-                //         SetTileAt(x, y, 0);
-                //         // add door
-                //         AddEntity(new Entity()
-                //         {
-                //             Name = "John Door",
-                //             Position = new(x, y)
-                //             {
-                //                 Solid = true
-                //             },
-                //             Render = new(new(Color.Brown, Color.Transparent, '+'), -1),
-                //             Destructible = new()
-                //             {
-                //                 RequiresForced = true
-                //             },
-                //             Door = new()
-                //             {
-                //                 OpenAppearance = new(Color.Brown, Color.Transparent, '-'),
-                //                 ClosedAppearance = new(Color.Brown, Color.Transparent, '+')
-                //             }
-                //         }
-                //         );
-                //     }
-                //     else                                                       // place walls
-                //         SetTileAt(x, y, 1);
-                // }
-                // else
-                //     SetTileAt(x, y, 0);
-                SetTileAt(x, y, 0);
+                if ( x % 6 == 0 || y % 6 == 0 ) // grid walls
+                {
+                    if ( (x % 3 == 0 && x % 6 != 0) || (y % 3 == 0 && y % 6 != 0 ) ) // place doors in centers of wall segments
+                    {
+                        SetTileAt(x, y, 0);
+                        // add door
+                        AddEntity(new Entity()
+                        {
+                            Name = "John Door",
+                            Position = new(x, y)
+                            {
+                                Solid = true
+                            },
+                            Render = new(new(Color.Brown, Color.Transparent, '+'), -1),
+                            Destructible = new()
+                            {
+                                RequiresForced = true
+                            },
+                            Door = new()
+                            {
+                                OpenAppearance = new(Color.Brown, Color.Transparent, '-'),
+                                ClosedAppearance = new(Color.Brown, Color.Transparent, '+')
+                            }
+                        }
+                        );
+                    }
+                    else                                                       // place walls
+                        SetTileAt(x, y, 1);
+                }
+                else
+                    SetTileAt(x, y, 0);
+                // SetTileAt(x, y, 0);
             }
         }
 
@@ -295,7 +297,9 @@ public sealed class Level : Persistant
         {
             for (int x = 0; x < Width; x++)
             {
-                writer.Write(GetTileAt(x, y).Id); // write tile id
+                Tile tile = GetTileAt(x, y);
+                writer.Write(tile.Id); // write tile id
+                writer.Write(tile.Hp); // write tile hp
             }
         }
 
@@ -315,7 +319,7 @@ public sealed class Level : Persistant
         {
             for (int x = 0; x < Width; x++)
             {
-                SetTileAt(x, y, reader.ReadInt32()); // set tile id
+                SetTileAt(x, y, reader.ReadInt32(), reader.ReadInt32()); // set tile id
             }
         }
 

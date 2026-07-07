@@ -19,6 +19,7 @@ public sealed class HealthDisplay : ScreenSurface // lists out the health of a b
         Position = (x, y);
     }
 
+    // limb label class
     private sealed class LimbLabel : ScreenSurface
     {
         LimbData _limb;

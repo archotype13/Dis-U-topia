@@ -147,4 +147,44 @@ public static class HealthManager // manages healing and damaging destructible a
             Engine.Instance!.GameManager.CurrentLevel!.AddEntity(corpse);
         }
     }
+
+    // tile destruction
+    public static bool IsTileTargetable(Level level, Point target, bool forced)
+    {
+        if (level.IsInBounds(target) )
+        {
+            TileData tileData = Engine.Instance!.ContentManager.TilePallete[level.GetTileAt(target).Id];
+            if ( tileData.Invincible == false && (tileData.RequiresForced == false || forced == true) )
+                return true;
+        }
+        return false;
+    }
+
+    public static void DealDamageToTile(Level level, Point target, AttackData attackData, Entity? attacker = null) // always check that the tile is targetable to ensure the tile is not invincible and target is in bounds
+    {
+        Level.Tile tile = level.GetTileAt(target);
+        TileData tileData = Engine.Instance!.ContentManager.TilePallete[level.GetTileAt(target).Id];
+
+        AttackResult result = GetAttackResult(attackData, tileData.Av, 0);
+
+        // failing to pierce message
+        if (attacker != null && result.Pierces == 0)
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}'s[c:u] attack fails to pierce the [c:r f:Yellow]{tileData.Name}[c:u]");
+            return;
+        }
+
+        tile.Hp -= result.Damage;
+        // set the actual tile's health
+        level.SetTileHealth(target, tile.Hp);
+
+        // piercing message
+        if (attacker != null)
+            Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{tileData.Name}[c:u] for [c:r f:Red]{result.Damage} ({result.Pierces})[c:u] points of damage ({tile.Hp}/{tileData.Hp})");
+    
+
+        if (tile.Hp <= 0)
+            level.SetTileAt(target, tileData.DestroysInto);
+    }
+
 }

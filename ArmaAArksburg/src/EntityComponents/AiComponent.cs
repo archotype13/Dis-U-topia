@@ -80,7 +80,7 @@ public class PlayerAiComponent : AiComponent
         // actually move if a direction was decided upon
         if ( dPos != (0, 0) )
         {
-            return new MoveOrAttackAction(dPos + owner.Position!.Cords, Speed, Quickness, true, Engine.Keyboard.IsKeyDown(Keys.LeftControl));
+            return new MoveOrAttackAction(dPos + owner.Position!.Cords, true, Engine.Keyboard.IsKeyDown(Keys.LeftControl));
         }
         // waiting
         if ( Engine.Keyboard.IsKeyPressed(Keys.NumPad5) )
@@ -111,7 +111,7 @@ public class PlayerAiComponent : AiComponent
             {
                 if ( entity.Door != null && entity.Door.IsOpened != open)
                 {
-                    ActionResult result = Engine.Instance!.GameManager.EntityPerformAction(owner, new ToggleDoorAction(entity, Quickness, open), open);
+                    ActionResult result = Engine.Instance!.GameManager.EntityPerformAction(owner, new ToggleDoorAction(entity, open), open);
                     // opening and closing messages
                     if (result is SucceededActionResult)
                         Engine.Instance!.ScreenManager.Log.LogMessage($"You {(open? "open" : "close")} the {entity.Name}");
@@ -138,7 +138,7 @@ public class BasicAiComponent : AiComponent
 {
     public override EntityAction Turn(Entity owner)
     {
-        return new PathOrAttackAction(Engine.Instance!.GameManager.Player!.Position!.Cords, 100, owner.Ai!.Speed, owner.Ai.Quickness, true);
+        return new PathOrAttackAction(Engine.Instance!.GameManager.Player!.Position!.Cords, 100, true);
         // return new PathMoveAction(Engine.Instance!.GameManager.Player!.Position!.Cords, owner.Ai!.Speed, 100);
         // return new MoveAction(owner.Position!.Cords + (Engine.Rng.Next(0, 3) - 1, Engine.Rng.Next(0, 3) - 1), Speed);
         // Engine.Instance!.GameManager.CurrentLevel!.RemoveEntity(owner);
