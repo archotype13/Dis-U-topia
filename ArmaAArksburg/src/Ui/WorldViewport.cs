@@ -1,6 +1,6 @@
 public sealed class WorldViewport : Console
 {
-    // public List<IRenderable> Renderables {get; private set;} = [];
+    private const float EXPLORED_DARKEN = 0.75f;
     private SortedDictionary<int, List<IRenderable>> Renderables = [];
     public List<Point> debugDrawPoints = [];
     public void RedrawLevel(Level level) // redraws the entire level
@@ -19,8 +19,8 @@ public sealed class WorldViewport : Console
                 else if (tile.IsExplored) // draw greyscaled for explored tiles
                 {
                     ColoredGlyph appearance = (ColoredGlyph)Engine.Instance!.ContentManager.TilePallete[tile.Id].Appearance.Clone();
-                    appearance.Background = GeneralConstants.GrayscaleColor(appearance.Background);
-                    appearance.Foreground = GeneralConstants.GrayscaleColor(appearance.Foreground);
+                    appearance.Background = GeneralConstants.GrayscaleColor(appearance.Background) * EXPLORED_DARKEN;
+                    appearance.Foreground = GeneralConstants.GrayscaleColor(appearance.Foreground) * EXPLORED_DARKEN;
                     Surface[x, y].CopyAppearanceFrom(appearance);
                 }
             }

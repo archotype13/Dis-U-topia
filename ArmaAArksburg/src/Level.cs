@@ -24,7 +24,7 @@ public sealed class Level : Persistant
 
     public Tile GetTileAt(Point point) { return GetTileAt(point.X, point.Y); }
 
-    public void SetTileAt(int x, int y, int tileId, int forcedHp = -1) // if forced hp is not -1, hp will be set to the forced hp value
+    public void SetTileAt(int x, int y, int tileId, int forcedHp = -1, bool? isExplored = null) // if forced hp is not -1, hp will be set to the forced hp value
     {
         // get rid of old tile data on the astar grid
         TileData oldTileData = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
@@ -33,7 +33,7 @@ public sealed class Level : Persistant
         Grid.SetCellMoveCost(x, y, -oldTileData.MoveCost);
         // add new data
         TileData newTileData = Engine.Instance!.ContentManager.TilePallete[tileId];
-        Tile newTile = new(tileId, (forcedHp == -1)? newTileData.Hp : forcedHp, oldTile.IsVisible, oldTile.IsExplored);
+        Tile newTile = new(tileId, (forcedHp == -1)? newTileData.Hp : forcedHp, oldTile.IsVisible, (isExplored != null)? (bool)isExplored : oldTile.IsExplored);
         Tiles[x + y*Width] = newTile;
         Grid.SetCellSolid(x, y, newTileData.Solid);
         Grid.SetCellMoveCost(x, y, newTileData.MoveCost);
@@ -239,6 +239,7 @@ public sealed class Level : Persistant
                 Tile tile = GetTileAt(x, y);
                 writer.Write(tile.Id); // write tile id
                 writer.Write(tile.Hp); // write tile hp
+                writer.Write(tile.IsExplored); // write if the tile is explored
             }
         }
 
@@ -258,7 +259,7 @@ public sealed class Level : Persistant
         {
             for (int x = 0; x < Width; x++)
             {
-                SetTileAt(x, y, reader.ReadInt32(), reader.ReadInt32()); // set tile id
+                SetTileAt(x, y, reader.ReadInt32(), reader.ReadInt32(), reader.ReadBoolean()); // set tile id
             }
         }
 
