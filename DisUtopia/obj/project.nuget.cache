@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ok+X4hxooIU=",
+  "dgSpecHash": "/NXLt0FHVS8=",
   "success": true,
-  "projectFilePath": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
+  "projectFilePath": "/home/archotype/Projects/DisUtopia/DisUtopia/DisUtopia.csproj",
   "expectedPackageFiles": [
     "/home/archotype/.nuget/packages/colorminestandard/1.0.0/colorminestandard.1.0.0.nupkg.sha512",
     "/home/archotype/.nuget/packages/coroutine/2.1.5/coroutine.2.1.5.nupkg.sha512",

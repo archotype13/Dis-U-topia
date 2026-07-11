@@ -582,11 +582,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
-      "projectName": "ArmaAArksburg",
-      "projectPath": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/ArmaAArksburg.csproj",
+      "projectUniqueName": "/home/archotype/Projects/DisUtopia/DisUtopia/DisUtopia.csproj",
+      "projectName": "DisUtopia",
+      "projectPath": "/home/archotype/Projects/DisUtopia/DisUtopia/DisUtopia.csproj",
       "packagesPath": "/home/archotype/.nuget/packages/",
-      "outputPath": "/home/archotype/Projects/Armageddon-at-Arksburg/ArmaAArksburg/obj/",
+      "outputPath": "/home/archotype/Projects/DisUtopia/DisUtopia/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/archotype/.nuget/NuGet/NuGet.Config"
