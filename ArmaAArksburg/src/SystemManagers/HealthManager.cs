@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+
 public static class HealthManager // manages healing and damaging destructible and body components
 {
     // balancing constants
@@ -36,7 +38,7 @@ public static class HealthManager // manages healing and damaging destructible a
         return false;
     }
 
-    public static void DealDamage( Entity target, Entity attacker, AttackData attackData ) // determines what components to deal damage to
+    public static void DealDamage( Entity target, Entity attacker, AttackData attackData) // determines what components to deal damage to
     {
         if (target.Body != null)
             DealDamage(target, target.Body, attacker, attackData);
@@ -44,7 +46,7 @@ public static class HealthManager // manages healing and damaging destructible a
             DealDamage(target, target.Destructible, attacker, attackData);
     }
 
-    private static void DealDamage( Entity target, DestructibleComponent destructible, Entity attacker, AttackData attackData ) // deals damage to destructibles
+    public static void DealDamage( Entity target, DestructibleComponent destructible, Entity attacker, AttackData attackData ) // deals damage to destructibles
     {
         AttackResult result = GetAttackResult(attackData, destructible!.Av, destructible!.Dv);
 
@@ -67,7 +69,7 @@ public static class HealthManager // manages healing and damaging destructible a
             KillEntity(target, destructible.Corpse);
     }
 
-    private static void DealDamage( Entity target, BodyComponent body, Entity attacker, AttackData attackData ) // deals damage to bodies. Currently targets a random limb
+    public static void DealDamage( Entity target, BodyComponent body, Entity attacker, AttackData attackData ) // deals damage to bodies. Currently targets a random limb
     {
         List<LimbData> limbs = [];
         BodyComponent.GetAllLimbs(limbs, body.RootLimb);
@@ -76,22 +78,26 @@ public static class HealthManager // manages healing and damaging destructible a
         DealDamage(target, body, aliveLimbs[index], attacker, attackData);
     }
 
-    private static void DealDamage(Entity target, BodyComponent body, LimbData limb, Entity attacker, AttackData attackData) // deals damage to a certain limb
+    public static void DealDamage(Entity target, BodyComponent body, LimbData limb, Entity attacker, AttackData attackData) // deals damage to a certain limb
     {
+        // get the aattack result
         AttackResult result = GetAttackResult(attackData, limb.Av, limb.Dv + body.DvMod);
 
+        // miss message
         if (result.Missed)
         {
             Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] misses");
             return;
         }
 
+        // no piercing message
         if (result.Pierces == 0)
         {
             Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}'s[c:u] attack fails to pierce the armor of [c:r f:Yellow]{target.Name}'s {limb.Name}[c:u]");
             return;
         }
 
+        // deal damage
         limb.Hp -= result.Damage;
         Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{target.Name}'s {limb.Name}[c:u] for [c:r f:Red]{result.Damage} ({result.Pierces})[c:u] points of damage ({limb.Hp}/{limb.MaxHp})");
 
@@ -100,7 +106,39 @@ public static class HealthManager // manages healing and damaging destructible a
         {
             body.IsAlive = false;
             KillEntity(target, body.Corpse);
+            return;
         }
+
+        if (target.Ai != null)
+        {
+            // handle speed penalties
+            if ( limb.LegData != null)
+            {
+                // reset previous changes
+                target.Ai.Speed += limb.LegData.Penalty;
+                
+                // new speed penalty calculation
+                limb.LegData.Penalty = LimbPenaltyCalculation(limb, limb.LegData.Weight);
+                System.Console.WriteLine($"New speed penalty: {limb.LegData.Penalty}");
+
+                // apply current changes
+                target.Ai.Speed -= limb.LegData.Penalty;
+            }
+            // handle quickness penalties
+            if ( limb.ArmData != null && target.Ai != null )
+            {
+                // reset previous changes
+                target.Ai.Quickness += limb.ArmData.Penalty;
+                
+                // new speed penalty calculation
+                limb.ArmData.Penalty = LimbPenaltyCalculation(limb, limb.ArmData.Weight);
+                System.Console.WriteLine($"New quickness penalty: {limb.ArmData.Penalty}");
+
+                // apply current changes
+                target.Ai.Quickness -= limb.ArmData.Penalty;
+            }
+        }
+        
             
     }
 
@@ -141,7 +179,7 @@ public static class HealthManager // manages healing and damaging destructible a
             {
                 Name = corpseData.CorpseName,
                 Position = new(target.Position.Cords.X, target.Position.Cords.Y) {Solid = false},
-                Render = new(corpseData.Appearance, 0)
+                Render = new(corpseData.Appearance, (int)GeneralConstants.DrawingOrders.CORPSES)
             };
 
             Engine.Instance!.GameManager.CurrentLevel!.AddEntity(corpse);
@@ -185,6 +223,13 @@ public static class HealthManager // manages healing and damaging destructible a
 
         if (tile.Hp <= 0)
             level.SetTileAt(target, tileData.DestroysInto);
+    }
+
+    // general calculations
+    private static int LimbPenaltyCalculation(LimbData limb, float weight) // used for speed and quickness penalty calculations
+    {
+        float modifier = 100 * weight;
+        return (int)( modifier - ( Math.Min(limb.Hp / (float)limb.MaxHp * 2, 1) * modifier ) );
     }
 
 }

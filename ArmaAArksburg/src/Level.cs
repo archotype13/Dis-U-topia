@@ -1,9 +1,11 @@
 public sealed class Level : Persistant
 {
-    public struct Tile(int id, int hp)
+    public struct Tile(int id, int hp, bool isVisible = false, bool isExplored = false)
     {
         public int Id = id;
         public int Hp = hp;
+        public bool IsVisible = isVisible;
+        public bool IsExplored = isExplored;
     }
 
     public int Width {get; private set;} = 0;
@@ -25,19 +27,19 @@ public sealed class Level : Persistant
     public void SetTileAt(int x, int y, int tileId, int forcedHp = -1) // if forced hp is not -1, hp will be set to the forced hp value
     {
         // get rid of old tile data on the astar grid
-        TileData oldTile = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
-        Grid!.SetCellSolid(x, y, !oldTile.Solid);
-        Grid.SetCellMoveCost(x, y, -oldTile.MoveCost);
+        TileData oldTileData = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
+        Tile oldTile = GetTileAt(x, y);
+        Grid!.SetCellSolid(x, y, !oldTileData.Solid);
+        Grid.SetCellMoveCost(x, y, -oldTileData.MoveCost);
         // add new data
         TileData newTileData = Engine.Instance!.ContentManager.TilePallete[tileId];
-        Tile newTile = new(tileId, (forcedHp == -1)? newTileData.Hp : forcedHp);
+        Tile newTile = new(tileId, (forcedHp == -1)? newTileData.Hp : forcedHp, oldTile.IsVisible, oldTile.IsExplored);
         Tiles[x + y*Width] = newTile;
         Grid.SetCellSolid(x, y, newTileData.Solid);
         Grid.SetCellMoveCost(x, y, newTileData.MoveCost);
     }
 
-    public void SetTileAt(Point point, int tileId) { SetTileAt(point.X, point.Y, tileId); }
-
+    // damaging tiles
     public void SetTileHealth(Point point, int newHealth)
     {
         Tiles[point.X + point.Y*Width].Hp = newHealth;
@@ -61,6 +63,25 @@ public sealed class Level : Persistant
     }
 
     public bool IsSolidAt(Point point) {return IsSolidAt(point.X, point.Y);}
+
+    public void SetTileAt(Point point, int tileId, int forcedHp = -1) { SetTileAt(point.X, point.Y, tileId, forcedHp); }
+
+    // LOS stuff
+    public void SetVisible(int x, int y, bool visible)
+    {
+        Tiles[x + y*Width].IsVisible = visible;
+    }
+    public void SetExplored(int x, int y, bool explored)
+    {
+        Tiles[x + y*Width].IsExplored = explored;
+    }
+    public void ClearVisibility() // used by los to clear what's being seen
+    {
+        for (int i = 0; i < Tiles.Length; i++)
+        {
+            Tiles[i].IsVisible = false;
+        }
+    }
 
     public List<Entity> GetEntitiesAt(Point point) // gets all the entities at a certain point
     {
@@ -119,7 +140,7 @@ public sealed class Level : Persistant
                             {
                                 Solid = true
                             },
-                            Render = new(new(Color.Brown, Color.Transparent, '+'), -1),
+                            Render = new(new(Color.Brown, Color.Transparent, '+'), (int)GeneralConstants.DrawingOrders.DOORS),
                             Destructible = new()
                             {
                                 RequiresForced = true
@@ -142,7 +163,7 @@ public sealed class Level : Persistant
         }
 
         // add test entities
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 0; i++)
         {
             AddEntity(new Entity()
             {
@@ -151,51 +172,11 @@ public sealed class Level : Persistant
                 {
                     Solid = true
                 },
-                Render = new(new(Color.Yellow, Color.Transparent, '@'), 1),
+                Render = new(new(Color.Yellow, Color.Transparent, '@'), (int)GeneralConstants.DrawingOrders.NPCS),
                 Body = new()
                 {
                     Corpse = new(){CorpseName = "John corpse", Appearance = new(Color.Red, Color.Transparent, '%')},
-                    RootLimb = new()
-                    {
-                        Name = "torso",
-                        MaxHp = 40,
-                        Hp = 40,
-                        Vital = true,
-                        ChildLimbs = 
-                        [
-                            new()
-                            {
-                                Name = "head",
-                                MaxHp = 30,
-                                Hp = 30,
-                                Vital = true
-                            },
-                            new()
-                            {
-                                Name = "left arm",
-                                MaxHp = 30,
-                                Hp = 30
-                            },
-                            new()
-                            {
-                                Name = "right arm",
-                                MaxHp = 30,
-                                Hp = 30,
-                            },
-                            new()
-                            {
-                                Name = "left leg",
-                                MaxHp = 30,
-                                Hp = 30,
-                            },
-                            new()
-                            {
-                                Name = "right leg",
-                                MaxHp = 30,
-                                Hp = 30,
-                            }
-                        ]
-                    }
+                    RootLimb = ContentManager.GetBasicHumanBody()
                 },
                 Attack = new()
                 {
@@ -217,54 +198,12 @@ public sealed class Level : Persistant
             {
                 Solid = true
             },
-            Render = new(new(Color.Purple, Color.Transparent, '@'), 100),
+            Render = new(new(Color.Purple, Color.Transparent, '@'), (int)GeneralConstants.DrawingOrders.PLAYER),
             Body = new()
             {
                 DvMod = 5,
                 Corpse = new(){CorpseName = "your cadaver", Appearance = new(Color.Red, Color.Transparent, '%')},
-                RootLimb = new()
-                {
-                    Name = "torso",
-                    MaxHp = 40,
-                    Hp = 40,
-                    Av = 12,
-                    Dv = -1,
-                    Vital = true,
-                    ChildLimbs = 
-                    [
-                        new()
-                        {
-                            Name = "head",
-                            MaxHp = 30,
-                            Hp = 30,
-                            Vital = true
-                        },
-                        new()
-                        {
-                            Name = "left arm",
-                            MaxHp = 30,
-                            Hp = 30
-                        },
-                        new()
-                        {
-                            Name = "right arm",
-                            MaxHp = 30,
-                            Hp = 30,
-                        },
-                        new()
-                        {
-                            Name = "left leg",
-                            MaxHp = 30,
-                            Hp = 30,
-                        },
-                        new()
-                        {
-                            Name = "right leg",
-                            MaxHp = 30,
-                            Hp = 30,
-                        }
-                    ]
-                }
+                RootLimb = ContentManager.GetBasicHumanBody()
             },
             Attack = new()
             {

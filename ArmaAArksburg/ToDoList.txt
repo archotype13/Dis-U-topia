@@ -1,34 +1,35 @@
 Core features
 --------------------------------------------------------------------------------------
+fov
+    bresenham
+    custom
+    light
 
-targeting specific limbs
-
-status effects
-    deal flat damage
 
 healing
     regen
 
-constants for layering
-
-fov
-    recalculated at the start of the player's action and whenever they take an action
-    ui works the same way
+status effects
+    be able to deal flat damage
+    use get and set to change certain attributes without going to far (IE: speed min)
 
 items
     inventory
+    consumables
     weapons
     armor
-    consumables
+
+better enemy ai
+
+loading content
+    cloning
+
+update all components on start of turn?
 
 main menu
     ability to reset engine to start new games
 
 ranged weapons
-
-loading content
-    cloning
-update all components on start of turn?
 
 tool tips
     check whats on a tile
@@ -37,9 +38,13 @@ world gen
 content
 balancing
 
+make stuff look pretty for release
+
 --------------------------------------------------------------------------------------
 Future features
 --------------------------------------------------------------------------------------
+
+sever limbs
 
 I think combat runs super slow???
 
@@ -57,9 +62,13 @@ input manager
 modular ai
     maybe player shouldn't have ai
 
+better ui using inbuilt classes
+
 new drawing system
     give map an IRenderable?
     particles!!!
+    remember where entities were for los
+        like in caves of qud
 
 way to quickly change stuff with solids on astar grid when toggling an entities solid property
 added to level method on components?

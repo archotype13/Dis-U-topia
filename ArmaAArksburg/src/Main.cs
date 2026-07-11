@@ -1,4 +1,6 @@
+using System.Net;
 using SadConsole.Configuration;
+using SadConsole.UI;
 
 Settings.WindowTitle = "Armageddon at Arksburg";
 

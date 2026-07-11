@@ -5,9 +5,10 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     public Entity? Player;
     public Level? CurrentLevel;
 
-    public GameState CurrentState = GameState.PLAYER_TURN;
+    public GameState CurrentState = GameState.START_UP;
     public enum GameState
     {
+        START_UP,
         PLAYER_TURN,
         TARGETING,
         NEW_TURN,
@@ -35,6 +36,13 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
     // do turn order
     private void Tick()
     {
+        // start up
+        if (CurrentState == GameState.START_UP)
+        {
+            OnPlayerAction();
+            CurrentState = GameState.PLAYER_TURN;
+        }
+
         // perform the player's turn to allow them to take their time
         if (CurrentState == GameState.PLAYER_TURN)
         {
@@ -68,7 +76,8 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
             if (Player.Ai!.Energy <= 0)
                 CurrentState = GameState.NEW_TURN;
 
-            TickEntity(Player, false);
+            if (TickEntity(Player, false) is not FailedActionResult) // recalculate FOV and refresh UI
+                OnPlayerAction();
         }
     }
 
@@ -90,13 +99,19 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         System.Console.WriteLine($"Round {_ticks}\nElasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
 
         Player!.Ai!.Energy += 100; // add player energy
+        OnPlayerAction(); // recalculate FOV and refresh UI
         CurrentState = GameState.PLAYER_TURN;
     }
 
-    private void TickEntity(Entity entity, bool endTurnOnFail = true) // performs a single entity's turn
+    private void OnPlayerAction() // runs when player does something and and the end of a round. Used for LOS and UI refreshes
+    {
+        LOSSystem.CalculateLos(Player!.Position!.Cords, CurrentLevel!); 
+    }
+
+    private ActionResult TickEntity(Entity entity, bool endTurnOnFail = true) // performs a single entity's turn
     {
         EntityAction action = entity.Ai!.Turn(entity);
-        EntityPerformAction(entity, action, endTurnOnFail);
+        return EntityPerformAction(entity, action, endTurnOnFail);
     }
 
     public ActionResult EntityPerformAction(Entity entity, EntityAction action, bool endTurnOnFail = true) // performs an action for an entity and handles the results

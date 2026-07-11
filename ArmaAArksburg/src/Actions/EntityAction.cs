@@ -2,12 +2,12 @@ public class EntityAction
 {
     public virtual ActionResult Perform(Entity actor)
     {
-        return new SucceededActionResult(0);
+        return new FailedActionResult();
     }
 
     protected static int GetActionCost(int baseCost, int speed)
     {
-        return Math.Max(baseCost * 100 / speed, 5 );
+        return Math.Max( baseCost * 100 / Math.Max(speed, 1), 5);
     }
 }
 

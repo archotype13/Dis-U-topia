@@ -80,7 +80,7 @@ public class PlayerAiComponent : AiComponent
         // actually move if a direction was decided upon
         if ( dPos != (0, 0) )
         {
-            return new MoveOrAttackAction(dPos + owner.Position!.Cords, true, Engine.Keyboard.IsKeyDown(Keys.LeftControl));
+            return new MoveOrAttackAction(dPos + owner.Position!.Cords, true, Engine.Keyboard.IsKeyDown(Keys.LeftControl), true);
         }
         // waiting
         if ( Engine.Keyboard.IsKeyPressed(Keys.NumPad5) )

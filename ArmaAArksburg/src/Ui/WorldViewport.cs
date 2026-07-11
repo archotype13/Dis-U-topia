@@ -5,18 +5,27 @@ public sealed class WorldViewport : Console
     public List<Point> debugDrawPoints = [];
     public void RedrawLevel(Level level) // redraws the entire level
     {
+        Surface.Clear();
+
         for (int y = 0; y < level.Height; y ++)
         {
             for (int x = 0; x < level.Width; x++)
             {
-                Surface[x, y].CopyAppearanceFrom(Engine.Instance!.ContentManager.TilePallete[level.GetTileAt(x, y).Id].Appearance);
+                Level.Tile tile = level.GetTileAt(x, y);
+                if (tile.IsVisible) // only draw visible tiles
+                {
+                    Surface[x, y].CopyAppearanceFrom(Engine.Instance!.ContentManager.TilePallete[tile.Id].Appearance);
+                }
+                else if (tile.IsExplored) // draw greyscaled for explored tiles
+                {
+                    ColoredGlyph appearance = (ColoredGlyph)Engine.Instance!.ContentManager.TilePallete[tile.Id].Appearance.Clone();
+                    appearance.Background = GeneralConstants.GrayscaleColor(appearance.Background);
+                    appearance.Foreground = GeneralConstants.GrayscaleColor(appearance.Foreground);
+                    Surface[x, y].CopyAppearanceFrom(appearance);
+                }
             }
         }
 
-        // foreach (IRenderable renderable in Renderables)
-        // {
-        //     renderable.Render(Surface);
-        // }
         // priority drawing for IRenderables
         foreach (int i in Renderables.Keys)
         {

@@ -1,3 +1,6 @@
+using System.Diagnostics.Tracing;
+using SadConsole.UI;
+
 public sealed class MoveAction(Point newCords) : EntityAction // uses the move system to move the entity
 {
     private readonly Point _newCords = newCords;
@@ -52,7 +55,7 @@ public sealed class ToggleDoorAction(Entity door, bool open) : EntityAction // t
     }
 }
 
-public sealed class MoveOrAttackAction(Point targetCords, bool openDoors, bool forced = false) : EntityAction // default walking action for most AIs. Will either open a door, attack an enemy, or move depending on context
+public sealed class MoveOrAttackAction(Point targetCords, bool openDoors, bool forced = false, bool useTargetWindow = false) : EntityAction // default walking action for most AIs. Will either open a door, attack an enemy, or move depending on context
 {
     private readonly Point _targetCords = targetCords;
     private readonly bool _openDoors = openDoors;
@@ -65,7 +68,7 @@ public sealed class MoveOrAttackAction(Point targetCords, bool openDoors, bool f
         {
             if (actor.Attack != null && HealthManager.IsTargetable(entity, forced)) // check for if the entity is a valid target to melee attack and has an actual melee attack
             {
-                return new AlternativeActionResult( new AttackAction(entity, 100, actor.Attack.Attack) );
+                return new AlternativeActionResult( new AttackAction(entity, 100, actor.Attack.Attack, useTargetWindow) );
             }
             else if (_openDoors == true && entity.Door != null && !entity.Door.IsOpened) // open a closed door if possible
                 return new AlternativeActionResult(new ToggleDoorAction(entity, true));
@@ -96,7 +99,7 @@ public sealed class PathOrAttackAction(Point targetCords, int maxVisits, bool op
     }
 }
 
-public sealed class AttackAction(Entity target, int baseCost, AttackData attack) : EntityAction
+public sealed class AttackAction(Entity target, int baseCost, AttackData attack, bool useTargetWindow) : EntityAction
 {
     private readonly Entity Target = target;
     private readonly int BaseCost = baseCost;
@@ -104,7 +107,28 @@ public sealed class AttackAction(Entity target, int baseCost, AttackData attack)
 
     public override ActionResult Perform(Entity actor)
     {
+        if (useTargetWindow && Target.Body != null) // handle target selection
+        {
+            Engine.Instance!.ScreenManager.Children.Add(LimbTargetWindow.Create(Target.Body, limb => {Engine.Instance.GameManager.EntityPerformAction(actor, new TargetedAttackAction(Target, limb, BaseCost, Attack));}));
+            return new SucceededActionResult(0);
+        }
+
         HealthManager.DealDamage(Target, actor, Attack);
+        return new SucceededActionResult(GetActionCost(BaseCost, actor.Ai!.Quickness));
+        
+    }
+}
+
+public sealed class TargetedAttackAction(Entity target, LimbData limb, int baseCost, AttackData attack) : EntityAction
+{
+    private readonly Entity Target = target;
+    private readonly LimbData _limb = limb;
+    private readonly int BaseCost = baseCost;
+    private readonly AttackData Attack = attack;
+
+    public override ActionResult Perform(Entity actor)
+    {
+        HealthManager.DealDamage(Target, Target.Body!, _limb, actor, Attack);
         return new SucceededActionResult(GetActionCost(BaseCost, actor.Ai!.Quickness));
     }
 }
