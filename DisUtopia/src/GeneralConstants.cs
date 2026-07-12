@@ -4,6 +4,7 @@ public static class GeneralConstants
     public enum DrawingOrders
     {
         DOORS,
+        ITEMS,
         CORPSES,
         NPCS,
         PLAYER,

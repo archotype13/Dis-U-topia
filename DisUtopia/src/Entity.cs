@@ -7,6 +7,8 @@ public sealed class Entity : Persistant
     public BodyComponent? Body {get; set;}
     public AttackComponent? Attack {get; set;}
     public AiComponent? Ai {get; set;}
+    public ItemComponent? Item {get; set;}
+    public InventoryComponent? Inventory {get; set;}
     public DoorComponent? Door {get; set;}
 
     public void AddToLevel(Level level)
@@ -16,8 +18,10 @@ public sealed class Entity : Persistant
         Destructible?.AddToLevel(this, level);
         Body?.AddToLevel(this, level);
         Attack?.AddToLevel(this, level);
-        Door?.AddToLevel(this, level);
         Ai?.AddToLevel(this, level);
+        Item?.AddToLevel(this, level);
+        Inventory?.AddToLevel(this, level);
+        Door?.AddToLevel(this, level);
     }
 
     public void RemoveFromLevel(Level level)
@@ -26,9 +30,11 @@ public sealed class Entity : Persistant
         Render?.RemoveFromLevel(this, level);
         Destructible?.RemoveFromLevel(this, level);
         Body?.RemoveFromLevel(this, level);
-        Attack?.AddToLevel(this, level);
-        Door?.RemoveFromLevel(this, level);
+        Attack?.RemoveFromLevel(this, level);
         Ai?.RemoveFromLevel(this, level);
+        Item?.RemoveFromLevel(this, level);
+        Inventory?.RemoveFromLevel(this, level);
+        Door?.RemoveFromLevel(this, level);
     }
 
     public override void Save(BinaryWriter writer)
@@ -46,6 +52,10 @@ public sealed class Entity : Persistant
         Attack?.Save(writer);
         writer.Write(Ai != null);            // Ai
         Ai?.Save(writer);
+        writer.Write(Item != null);          // Item
+        Item?.Save(writer);
+        writer.Write(Inventory != null);     // Inventory
+        Inventory?.Save(writer);
         writer.Write(Door != null);          // Door
         Door?.Save(writer);
     }
@@ -81,6 +91,16 @@ public sealed class Entity : Persistant
         if (reader.ReadBoolean()) // check if ai exists
         {
             Ai = AiComponent.Create(reader);
+        }
+        if (reader.ReadBoolean()) // check if item exists
+        {
+            Item = new();
+            Item.Load(reader);
+        }
+        if (reader.ReadBoolean()) // check if inventory exists
+        {
+            Inventory = new();
+            Inventory.Load(reader);
         }
         if (reader.ReadBoolean()) // check if door exists
         {

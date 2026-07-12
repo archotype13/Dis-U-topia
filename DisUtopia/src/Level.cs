@@ -106,7 +106,7 @@ public sealed class Level : Persistant
         return entities;
     }
 
-    public void AddEntity(Entity entity, bool init = false) // change with a better system later
+    public void AddEntity(Entity entity) // change with a better system later
     {
         AddQueue.Add(entity);
     }
@@ -175,7 +175,7 @@ public sealed class Level : Persistant
         }
 
         // add test entities
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 0; i++)
         {
             AddEntity(new Entity()
             {
@@ -203,6 +203,18 @@ public sealed class Level : Persistant
             );
         }
 
+        // test item
+        for (int i = 0; i <= 100; i++)
+        {
+            AddEntity(new Entity()
+            {
+                Name = $"item",
+                Position = new(3, 3),
+                Render = new(new ColoredGlyph(Color.Red, Color.Transparent, '\\'), (int)GeneralConstants.DrawingOrders.ITEMS),
+                Item = new() { Weight = 10}
+            });
+        }
+        
         Engine.Instance!.GameManager.Player = new Entity()
         {
             Name = "Player",
@@ -225,7 +237,8 @@ public sealed class Level : Persistant
             Ai = new PlayerAiComponent()
             {
                 Speed = 100
-            }
+            },
+            Inventory = new() {MaxWeight = 200}
         };
 
         AddEntity(Engine.Instance!.GameManager.Player);

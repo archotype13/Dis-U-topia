@@ -103,6 +103,7 @@ public sealed class LimbTargetWindow : ScreenSurface
         _limbList.SetThemeColors(colors);
         
         _controls.Add(_limbList);
+        _limbList.UpdateAndRedraw(new());
 
         // title
         Label title = new(WIDTH);

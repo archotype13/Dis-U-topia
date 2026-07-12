@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Serialization;
 using SadConsole.Input;
 
 public class AiComponent : EntityComponent
@@ -98,6 +99,10 @@ public class PlayerAiComponent : AiComponent
             ToggleDoorSelection(owner, true);
             return new EntityAction();
         }
+        if ( Engine.Keyboard.IsKeyPressed(Keys.G) ) // grab items
+        {
+            return GrabItems(owner);
+        }
 
         // debug cheats
         if ( Engine.Keyboard.IsKeyPressed(Keys.F1))
@@ -131,6 +136,27 @@ public class PlayerAiComponent : AiComponent
         Engine.Instance!.GameManager.CurrentState = GameManager.GameState.TARGETING;
     }
 
+    public EntityAction GrabItems(Entity owner)
+    {
+        foreach (Entity entity in Engine.Instance!.GameManager.CurrentLevel!.GetEntitiesAt(owner.Position!.Cords))
+        {
+            if (entity.Item != null)
+            {
+                System.Console.WriteLine($"{entity.Name} is an item and here!");
+                if (owner.Inventory!.CurrentWeight + entity.Item.Weight <= owner.Inventory!.MaxWeight)
+                {
+                    owner.Inventory.Items.Add(entity);
+                    owner.Inventory.CurrentWeight += entity.Item.Weight;
+                    System.Console.WriteLine($"{entity.Name} was picked up");
+                }
+                else
+                    System.Console.WriteLine($"{entity.Name} was too heavy to be picked up");
+                break;
+            }
+        }
+        System.Console.WriteLine($"{owner.Inventory!.CurrentWeight} / {owner.Inventory!.MaxWeight}. items: {owner.Inventory.Items.Count}");
+        return new EntityAction();
+    }
     public override void Save(BinaryWriter writer)
     {
         writer.Write((int)AiType.PLAYER);
