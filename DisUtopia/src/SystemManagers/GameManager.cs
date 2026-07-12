@@ -22,6 +22,9 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
 
     private ulong _ticks = 0;
 
+    // debug cheats
+    public bool IgnoreLOS = false;
+
     public override void Update(TimeSpan delta)
     {
         if (CurrentLevel != null)
@@ -89,6 +92,8 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         {
             if (entity != Player && entity.Ai != null)
             {
+                entity.Body?.Tick(entity, CurrentLevel!); // tick for regen until all components get ticked at the start of their turn
+
                 entity.Ai!.Energy += 100; // add their energy
                 while (entity.Ai.Energy > 0)
                     TickEntity(entity);
@@ -98,7 +103,8 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
 
         System.Console.WriteLine($"Round {_ticks}\nElasped turn time: {Stopwatch.GetElapsedTime(startTime)}"); // print out time it took for round to process for turn time
 
-        Player!.Ai!.Energy += 100; // add player energy
+        Player!.Body?.Tick(Player, CurrentLevel!); // tick for regen until all components get ticked at the start of their turn
+        Player.Ai!.Energy += 100; // add player energy
         OnPlayerAction(); // recalculate FOV and refresh UI
         CurrentState = GameState.PLAYER_TURN;
     }

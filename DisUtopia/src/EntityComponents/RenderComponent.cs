@@ -3,6 +3,7 @@ public sealed class RenderComponent(ColoredGlyph appearance, int priority) : Ent
     private EntityRenderable? _entityRenderable;
     public ColoredGlyph Appearance = appearance;
     public int Priority = priority;
+    public bool DrawWhenExplored = false; // determines if it's drawn when explored and not visible
 
     public override void AddToLevel(Entity owner, Level level)
     {
@@ -23,11 +24,13 @@ public sealed class RenderComponent(ColoredGlyph appearance, int priority) : Ent
     {
         SaveManager.SaveColoredGlyph(Appearance, writer);
         writer.Write(Priority);
+        writer.Write(DrawWhenExplored);
     }
 
     public override void Load(BinaryReader reader)
     {
         Appearance = SaveManager.LoadColoredGlyph(reader);
         Priority = reader.ReadInt32();
+        DrawWhenExplored = reader.ReadBoolean();
     }
 }

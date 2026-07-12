@@ -1,5 +1,6 @@
 public static class GeneralConstants
 {
+    public const float EXPLORED_DARKEN = 0.75f;
     public enum DrawingOrders
     {
         DOORS,

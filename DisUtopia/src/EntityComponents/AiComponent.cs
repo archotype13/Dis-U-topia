@@ -98,6 +98,10 @@ public class PlayerAiComponent : AiComponent
             ToggleDoorSelection(owner, true);
             return new EntityAction();
         }
+
+        // debug cheats
+        if ( Engine.Keyboard.IsKeyPressed(Keys.F1))
+            Engine.Instance!.GameManager.IgnoreLOS = !Engine.Instance!.GameManager.IgnoreLOS;
         
         return new EntityAction();
     }

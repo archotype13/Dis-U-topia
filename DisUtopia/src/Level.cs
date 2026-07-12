@@ -29,13 +29,19 @@ public sealed class Level : Persistant
         // get rid of old tile data on the astar grid
         TileData oldTileData = Engine.Instance!.ContentManager.TilePallete[Tiles[x + y*Width].Id];
         Tile oldTile = GetTileAt(x, y);
-        Grid!.SetCellSolid(x, y, !oldTileData.Solid);
+        if (oldTileData.Solid)
+            Grid!.SetCellSolid(x, y, false);
+        if (oldTileData.Opaque)
+            Grid!.SetCellOpaque(x, y, false);
         Grid.SetCellMoveCost(x, y, -oldTileData.MoveCost);
         // add new data
         TileData newTileData = Engine.Instance!.ContentManager.TilePallete[tileId];
         Tile newTile = new(tileId, (forcedHp == -1)? newTileData.Hp : forcedHp, oldTile.IsVisible, (isExplored != null)? (bool)isExplored : oldTile.IsExplored);
         Tiles[x + y*Width] = newTile;
-        Grid.SetCellSolid(x, y, newTileData.Solid);
+        if (newTileData.Solid)
+            Grid.SetCellSolid(x, y, true);
+        if (newTileData.Opaque)
+            Grid!.SetCellOpaque(x, y, true);
         Grid.SetCellMoveCost(x, y, newTileData.MoveCost);
     }
 
@@ -67,13 +73,19 @@ public sealed class Level : Persistant
     public void SetTileAt(Point point, int tileId, int forcedHp = -1) { SetTileAt(point.X, point.Y, tileId, forcedHp); }
 
     // LOS stuff
-    public void SetVisible(int x, int y, bool visible)
+    public bool IsOpaqueAt(int x, int y)
     {
-        Tiles[x + y*Width].IsVisible = visible;
+        if (!IsInBounds(x, y))
+            return true;
+        return Grid.GetCell(x, y).NOpaques > 0;
     }
-    public void SetExplored(int x, int y, bool explored)
+    public void SetVisible(int x, int y)
     {
-        Tiles[x + y*Width].IsExplored = explored;
+        if (!IsInBounds(x, y))
+            return;
+
+        Tiles[x + y*Width].IsVisible = true;
+        Tiles[x + y*Width].IsExplored = true;
     }
     public void ClearVisibility() // used by los to clear what's being seen
     {
@@ -138,9 +150,9 @@ public sealed class Level : Persistant
                             Name = "John Door",
                             Position = new(x, y)
                             {
-                                Solid = true
+                                
                             },
-                            Render = new(new(Color.Brown, Color.Transparent, '+'), (int)GeneralConstants.DrawingOrders.DOORS),
+                            Render = new(new(Color.Brown, Color.Transparent, '+'), (int)GeneralConstants.DrawingOrders.DOORS) {DrawWhenExplored = true},
                             Destructible = new()
                             {
                                 RequiresForced = true
@@ -163,7 +175,7 @@ public sealed class Level : Persistant
         }
 
         // add test entities
-        for (int i = 0; i < 0; i++)
+        for (int i = 0; i < 1; i++)
         {
             AddEntity(new Entity()
             {
@@ -203,7 +215,8 @@ public sealed class Level : Persistant
             {
                 DvMod = 5,
                 Corpse = new(){CorpseName = "your cadaver", Appearance = new(Color.Red, Color.Transparent, '%')},
-                RootLimb = ContentManager.GetBasicHumanBody()
+                RootLimb = ContentManager.GetBasicHumanBody(),
+                TimeTillRegen = 15
             },
             Attack = new()
             {

@@ -1,16 +1,5 @@
 Core features
 --------------------------------------------------------------------------------------
-fov
-    custom
-    light
-
-
-healing
-    regen
-
-status effects
-    be able to deal flat damage
-    use get and set to change certain attributes without going to far (IE: speed min)
 
 items
     inventory
@@ -18,7 +7,14 @@ items
     weapons
     armor
 
+status effects
+    be able to deal flat damage
+    use get and set to change certain attributes without going to far (IE: speed min)
+
 better enemy ai
+
+fov
+    light
 
 loading content
     cloning
@@ -28,6 +24,11 @@ update all components on start of turn?
 main menu
     ability to reset engine to start new games
 
+abilities
+    running!!!
+    spider webs
+        add movement difficulty
+    apply status effect
 ranged weapons
 
 tool tips

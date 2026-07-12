@@ -101,44 +101,10 @@ public static class HealthManager // manages healing and damaging destructible a
         limb.Hp -= result.Damage;
         Engine.Instance!.ScreenManager.Log.LogMessage($"[c:r f:Yellow]{attacker.Name}[c:u] hits [c:r f:Yellow]{target.Name}'s {limb.Name}[c:u] for [c:r f:Red]{result.Damage} ({result.Pierces})[c:u] points of damage ({limb.Hp}/{limb.MaxHp})");
 
-        // handle death
-        if ( limb.Vital && limb.Hp <= 0 )
-        {
-            body.IsAlive = false;
-            KillEntity(target, body.Corpse);
-            return;
-        }
+        body.TicksSinceDamaged = 0; // reset regen time
 
-        if (target.Ai != null)
-        {
-            // handle speed penalties
-            if ( limb.LegData != null)
-            {
-                // reset previous changes
-                target.Ai.Speed += limb.LegData.Penalty;
-                
-                // new speed penalty calculation
-                limb.LegData.Penalty = LimbPenaltyCalculation(limb, limb.LegData.Weight);
-                System.Console.WriteLine($"New speed penalty: {limb.LegData.Penalty}");
-
-                // apply current changes
-                target.Ai.Speed -= limb.LegData.Penalty;
-            }
-            // handle quickness penalties
-            if ( limb.ArmData != null && target.Ai != null )
-            {
-                // reset previous changes
-                target.Ai.Quickness += limb.ArmData.Penalty;
-                
-                // new speed penalty calculation
-                limb.ArmData.Penalty = LimbPenaltyCalculation(limb, limb.ArmData.Weight);
-                System.Console.WriteLine($"New quickness penalty: {limb.ArmData.Penalty}");
-
-                // apply current changes
-                target.Ai.Quickness -= limb.ArmData.Penalty;
-            }
-        }
-        
+        // handle new penalties
+        HandleLimbPenalties(target, body, limb);
             
     }
 
@@ -184,6 +150,54 @@ public static class HealthManager // manages healing and damaging destructible a
 
             Engine.Instance!.GameManager.CurrentLevel!.AddEntity(corpse);
         }
+    }
+
+    private static void HandleLimbPenalties(Entity target, BodyComponent body, LimbData limb)
+    {
+        // handle death
+        if ( limb.Vital && limb.Hp <= 0 )
+        {
+            body.IsAlive = false;
+            KillEntity(target, body.Corpse);
+            return;
+        }
+
+        if (target.Ai != null)
+        {
+            // handle speed penalties
+            if ( limb.LegData != null)
+            {
+                // reset previous changes
+                target.Ai.Speed += limb.LegData.Penalty;
+                
+                // new speed penalty calculation
+                limb.LegData.Penalty = LimbPenaltyCalculation(limb, limb.LegData.Weight);
+                System.Console.WriteLine($"New speed penalty: {limb.LegData.Penalty}");
+
+                // apply current changes
+                target.Ai.Speed -= limb.LegData.Penalty;
+            }
+            // handle quickness penalties
+            if ( limb.ArmData != null && target.Ai != null )
+            {
+                // reset previous changes
+                target.Ai.Quickness += limb.ArmData.Penalty;
+                
+                // new speed penalty calculation
+                limb.ArmData.Penalty = LimbPenaltyCalculation(limb, limb.ArmData.Weight);
+                System.Console.WriteLine($"New quickness penalty: {limb.ArmData.Penalty}");
+
+                // apply current changes
+                target.Ai.Quickness -= limb.ArmData.Penalty;
+            }
+        }
+    }
+
+    // healing
+    public static void HealLimb(Entity target, BodyComponent body, LimbData limb, int amount)
+    {
+        limb.Hp = Math.Min(limb.Hp + amount, limb.MaxHp);
+        HandleLimbPenalties(target, body, limb); // handle the new penalty values
     }
 
     // tile destruction
