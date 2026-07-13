@@ -1,7 +1,3 @@
-using System.Buffers;
-using System.Diagnostics.Tracing;
-using SadConsole.UI;
-
 public sealed class MoveAction(Point newCords) : EntityAction // uses the move system to move the entity
 {
     private readonly Point _newCords = newCords;
@@ -10,9 +6,43 @@ public sealed class MoveAction(Point newCords) : EntityAction // uses the move s
         if (actor.Position != null)
         {
             if (actor.Position.Move(_newCords))
-                return new SucceededActionResult( GetActionCost(Engine.Instance!.GameManager.CurrentLevel!.Grid!.GetCell(_newCords).MoveCost, actor.Ai!.Speed) );
-                // move energy is calculated by dividing by move cost of the tile by the speed divided by the average speed, speed limit is 5 energy points for 20 tiles per turn
+            {
+                // print out what's on the new tile if the actor is the player
+                if (actor == Engine.Instance!.GameManager.Player)
+                {
+                    List<Entity> entities = Engine.Instance!.GameManager.CurrentLevel!.GetEntitiesAt(_newCords);
+                    entities.Remove(actor);
+                    if (entities.Count == 1) // just one entity
+                    {
+                        Engine.Instance!.ScreenManager.Log.LogMessage($"There's a {entities[0].Name} here");
+                    }
+                    else if (entities.Count > 1) // multiple entities
+                    {
+                        string message = "There's a";
 
+                        for (int i = 0; i < entities.Count; i++)
+                        {
+                            if ( i == 0 )
+                            {
+                                message += $"a {entities[i].Name}";
+                            }
+                            if ( i == entities.Count - 1 )
+                            {
+                                message += $", and a {entities[i].Name} here";
+                            }
+                            else
+                            {
+                                message += $", {entities[i].Name}";
+                            }
+                        }
+
+                        Engine.Instance!.ScreenManager.Log.LogMessage(message);
+                    }
+                }
+
+                // actually move
+                return new SucceededActionResult( GetActionCost(Engine.Instance!.GameManager.CurrentLevel!.Grid!.GetCell(_newCords).MoveCost, actor.Ai!.Speed) );
+            }
         }
         return new FailedActionResult();
     }

@@ -30,6 +30,7 @@ public sealed class PositionComponent(int x, int y) : EntityComponent
         }
         
         Cords = (x, y);
+
         return true;
     }
 

@@ -29,6 +29,7 @@ abilities
     spider webs
         add movement difficulty
     apply status effect
+
 ranged weapons
 
 tool tips

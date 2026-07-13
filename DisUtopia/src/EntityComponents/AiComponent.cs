@@ -58,7 +58,6 @@ public class PlayerAiComponent : AiComponent
 {
     public override EntityAction Turn(Entity owner)
     {
-
         // movement
         Point dPos = (0,0);
         if ( Engine.Keyboard.IsKeyPressed(Keys.NumPad8) )
