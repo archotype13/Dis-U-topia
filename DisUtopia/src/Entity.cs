@@ -108,4 +108,9 @@ public sealed class Entity : Persistant
             Door.Load(reader);
         }
     }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }

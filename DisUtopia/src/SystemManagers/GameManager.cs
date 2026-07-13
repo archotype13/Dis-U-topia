@@ -12,7 +12,7 @@ public sealed class GameManager : ScreenObject // manages game state, turn order
         PLAYER_TURN,
         TARGETING,
         NEW_TURN,
-        SELECTION,
+        UI,
         GAME_OVER
     };
     public Selector? Selector;

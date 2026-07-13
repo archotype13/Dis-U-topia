@@ -211,7 +211,7 @@ public sealed class Level : Persistant
                 Name = $"item",
                 Position = new(3, 3),
                 Render = new(new ColoredGlyph(Color.Red, Color.Transparent, '\\'), (int)GeneralConstants.DrawingOrders.ITEMS),
-                Item = new() { Weight = 10}
+                Item = new() { Weight = 0}
             });
         }
         

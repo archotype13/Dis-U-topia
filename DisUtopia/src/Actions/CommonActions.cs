@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Diagnostics.Tracing;
 using SadConsole.UI;
 
@@ -143,5 +144,62 @@ public sealed class AttackTileAction(Point target, int baseCost, AttackData atta
     {
         HealthManager.DealDamageToTile(Engine.Instance!.GameManager.CurrentLevel!, Target, Attack, actor);
         return new SucceededActionResult(GetActionCost(BaseCost, actor.Ai!.Quickness));
+    }
+}
+
+public sealed class PickUpItemAction(Entity target) : EntityAction // make sure target has an item component and the actor has an inventory
+{
+    private readonly Entity Target = target;
+
+    public override ActionResult Perform(Entity actor)
+    {
+        // check if the item won't cause the actor to overfill their inventory
+        if (actor.Inventory!.CurrentWeight + Target.Item!.Weight <= actor.Inventory!.MaxWeight)
+        {
+            actor.Inventory.Items.Add(Target);
+            actor.Inventory.CurrentWeight += Target.Item.Weight;
+            
+            // print message if player
+            if (Engine.Instance!.GameManager.Player == actor)
+            {
+                Engine.Instance!.ScreenManager.Log.LogMessage($"You pick up the {Target.Name}");
+            }
+            return new SucceededActionResult(Target.Item.Weight); // the energy used is equivalent to the item's weight
+        }
+        else
+        {
+            // print message if player
+            if (Engine.Instance!.GameManager.Player == actor)
+            {
+                Engine.Instance!.ScreenManager.Log.LogMessage($"You try to pick up the {Target.Name}, but you're carrying too much!");
+            }
+            return new FailedActionResult();
+        }
+    }
+}
+
+public sealed class DropItemAction(Entity target) : EntityAction // make sure target has an item component and the actor has item in it's inventory and said inventory exists
+{
+    private readonly Entity Target = target;
+
+    public override ActionResult Perform(Entity actor)
+    {
+        // remove item from the actor's inventory
+        actor.Inventory!.Items.Remove(Target);
+        // set it's position
+        if (actor.Position != null && Target.Position != null)
+        {
+            Target.Position.Cords = actor.Position.Cords;
+        }
+        // add it to the ground
+        Engine.Instance!.GameManager.CurrentLevel!.AddEntity(Target);
+
+        // print message if player
+        if (Engine.Instance!.GameManager.Player == actor)
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage($"You drop the {Target.Name}");
+        }
+
+        return new SucceededActionResult(Target.Item!.Weight! / 2); // the energy used is equivalent to the item's weight / 2
     }
 }

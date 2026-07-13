@@ -24,7 +24,6 @@ public sealed class BodyComponent : EntityComponent
     {
         // handle regening
         TicksSinceDamaged++;
-        System.Console.WriteLine($"ticks: {TicksSinceDamaged}. threshold: {TimeTillRegen}");
         if (TimeTillRegen != -1 && TicksSinceDamaged > TimeTillRegen)
         {
             List<LimbData> limbs = [];

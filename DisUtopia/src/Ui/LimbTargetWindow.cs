@@ -66,7 +66,7 @@ public sealed class LimbTargetWindow : ScreenSurface
     private LimbTargetWindow(BodyComponent body, List<LimbData> limbs, Action<LimbData> action, string windowTitle) : base(WIDTH, limbs.Count + 2) // use the create function not this one to instantiate the object
     {
         // get selection state going
-        Engine.Instance!.GameManager.CurrentState = GameManager.GameState.SELECTION;
+        Engine.Instance!.GameManager.CurrentState = GameManager.GameState.UI;
         IsFocused = true;
 
         // set basic properties
@@ -77,15 +77,6 @@ public sealed class LimbTargetWindow : ScreenSurface
 
         // create controls
         _controls = new();
-        
-        // set colors
-        Colors colors = Colors.Default.Clone();
-        colors.ControlHostForeground.SetColor(Color.White);
-        colors.ControlHostBackground.SetColor(Color.Blue);
-        colors.ControlBackgroundNormal.SetColor(Color.Blue);
-        colors.ControlBackgroundMouseOver.SetColor(Color.Blue);
-        colors.RebuildAppearances();
-        _controls.ThemeColors = colors;
 
         // set up limb list
         _limbList = new(Width - 2, Height - 2)
@@ -100,7 +91,6 @@ public sealed class LimbTargetWindow : ScreenSurface
 
         _limbList.SelectedItemExecuted += OnItemExecuted;
         _limbList.SingleClickItemExecute = true;
-        _limbList.SetThemeColors(colors);
         
         _controls.Add(_limbList);
         _limbList.UpdateAndRedraw(new());
@@ -109,7 +99,6 @@ public sealed class LimbTargetWindow : ScreenSurface
         Label title = new(WIDTH);
         title.Alignment = HorizontalAlignment.Center;
         title.DisplayText = windowTitle;
-        title.SetThemeColors(colors);
 
         _controls.Add(title);
         title.UpdateAndRedraw(new());

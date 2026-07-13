@@ -88,6 +88,11 @@ public class PlayerAiComponent : AiComponent
         {
             return new WaitAction();
         }
+        // inventory
+        if ( Engine.Keyboard.IsKeyPressed(Keys.I) )
+        {
+            InventoryWindow.Create();
+        }
         // toggling doors
         if ( Engine.Keyboard.IsKeyPressed(Keys.C) ) // closing
         {
@@ -102,6 +107,10 @@ public class PlayerAiComponent : AiComponent
         if ( Engine.Keyboard.IsKeyPressed(Keys.G) ) // grab items
         {
             return GrabItems(owner);
+        }
+        if ( Engine.Keyboard.IsKeyPressed(Keys.D) ) // drop items
+        {
+            return DropItems(owner);
         }
 
         // debug cheats
@@ -138,25 +147,33 @@ public class PlayerAiComponent : AiComponent
 
     public EntityAction GrabItems(Entity owner)
     {
-        foreach (Entity entity in Engine.Instance!.GameManager.CurrentLevel!.GetEntitiesAt(owner.Position!.Cords))
+        // get items
+        List<Entity> items = [.. Engine.Instance!.GameManager.CurrentLevel!.GetEntitiesAt(owner.Position!.Cords).Where(e => e.Item != null)];
+        if (items.Count == 1) // if there's just one item, just pick it up!
         {
-            if (entity.Item != null)
-            {
-                System.Console.WriteLine($"{entity.Name} is an item and here!");
-                if (owner.Inventory!.CurrentWeight + entity.Item.Weight <= owner.Inventory!.MaxWeight)
-                {
-                    owner.Inventory.Items.Add(entity);
-                    owner.Inventory.CurrentWeight += entity.Item.Weight;
-                    System.Console.WriteLine($"{entity.Name} was picked up");
-                }
-                else
-                    System.Console.WriteLine($"{entity.Name} was too heavy to be picked up");
-                break;
-            }
+            return new PickUpItemAction(items[0]);
         }
-        System.Console.WriteLine($"{owner.Inventory!.CurrentWeight} / {owner.Inventory!.MaxWeight}. items: {owner.Inventory.Items.Count}");
+        if (items.Count > 0)  // if there's more than one item, create a selection window
+        {
+            int height = Math.Min(items.Count + 2, Game.Instance.ScreenCellsY);
+            EntitySelectionWindow selectionWindow = EntitySelectionWindow.Create(Game.Instance.ScreenCellsX / 2 - GeneralConstants.PICKUP_DROP_WINDOW_WIDTH / 2, Game.Instance.ScreenCellsY / 2 - height / 2, GeneralConstants.PICKUP_DROP_WINDOW_WIDTH, height, items, "Pick up what?", true);
+            selectionWindow.List.SelectedItemExecuted += (s, a) => {Engine.Instance!.GameManager.EntityPerformAction(owner, new PickUpItemAction((Entity)a.Item!)); selectionWindow.Close();};
+        }
+        else // else, just print a message
+        {
+            Engine.Instance!.ScreenManager.Log.LogMessage("There's nothing here to pick up!");
+        }
+        
         return new EntityAction();
     }
+
+    public EntityAction DropItems(Entity owner)
+    {
+        EntitySelectionWindow selectionWindow = EntitySelectionWindow.Create(Game.Instance.ScreenCellsX / 2 - GeneralConstants.PICKUP_DROP_WINDOW_WIDTH / 2, 0, GeneralConstants.PICKUP_DROP_WINDOW_WIDTH, Game.Instance.ScreenCellsY, owner.Inventory!.Items, "Drop what?", true);
+        selectionWindow.List.SelectedItemExecuted += (s, a) => {Engine.Instance!.GameManager.EntityPerformAction(owner, new DropItemAction((Entity)a.Item!)); selectionWindow.Close();};
+        return new EntityAction();
+    }
+
     public override void Save(BinaryWriter writer)
     {
         writer.Write((int)AiType.PLAYER);

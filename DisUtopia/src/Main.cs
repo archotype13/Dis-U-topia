@@ -13,6 +13,8 @@ Builder
 
 static void Startup(object? sender, GameHost host)
 {
+    // set up constants
+    GeneralConstants.Init();
     // create a new engine
     _ = new Engine();
 }

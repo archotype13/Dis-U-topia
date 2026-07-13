@@ -2,10 +2,10 @@ Core features
 --------------------------------------------------------------------------------------
 
 items
-    inventory
-    consumables
-    weapons
-    armor
+    Uses
+        consumables
+        weapons
+        armor
 
 status effects
     be able to deal flat damage
