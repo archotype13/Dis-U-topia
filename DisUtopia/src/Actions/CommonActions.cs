@@ -188,6 +188,9 @@ public sealed class PickUpItemAction(Entity target) : EntityAction // make sure 
         {
             actor.Inventory.Items.Add(Target);
             actor.Inventory.CurrentWeight += Target.Item.Weight;
+
+            // remove item from level
+            Engine.Instance!.GameManager.CurrentLevel!.RemoveEntity(Target);
             
             // print message if player
             if (Engine.Instance!.GameManager.Player == actor)

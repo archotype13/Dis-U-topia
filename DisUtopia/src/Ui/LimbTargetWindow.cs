@@ -12,13 +12,17 @@ public sealed class LimbTargetWindow : ScreenSurface
     private ControlHost _controls;
     private ListBox _limbList;
     private Action<LimbData> _action;
+    private readonly bool _goBackToPlayerState; // whether the game manager state should go back to PLAYER_TURN when the window is closed. Use when other ui opens this menu
+    public ScreenObject? AbsentParentConsole; // since all of these windows are children of the root screen, this variable keeps track of the console that created it for exclusive mouse stuff
+    public event Action? OnClosed;
 
-    public static LimbTargetWindow Create(BodyComponent body, Action<LimbData> action, string windowTitle = "Select a limb") // use to create limb windows
+    public static LimbTargetWindow Create(BodyComponent body, Action<LimbData> action, string windowTitle = "Select a limb", bool goBackToPlayerState = true) // use to create limb windows
     {
         List<LimbData> limbs = [];
         BodyComponent.GetAllLimbs(limbs, body.RootLimb);
+        Engine.Instance!.GameManager.CurrentState = GameManager.GameState.UI;
 
-        return new LimbTargetWindow(body, limbs, action, windowTitle);
+        return new LimbTargetWindow(body, limbs, action, windowTitle, goBackToPlayerState);
     }
 
     private void OnItemExecuted(object? sender, ListBox.SelectedItemEventArgs e)
@@ -30,7 +34,7 @@ public sealed class LimbTargetWindow : ScreenSurface
     {
         if (keyboard.IsKeyPressed(Keys.Escape))
         {
-            End();
+            Close();
             return true;
         }
         if (keyboard.IsKeyPressed(Keys.Up))
@@ -54,26 +58,33 @@ public sealed class LimbTargetWindow : ScreenSurface
     private void SelectLimb(LimbData limb)
     {
         _action.Invoke(limb);
-        End();
+        Close();
     }
 
-    private void End()
+    private void Close()
     {
         Engine.Instance!.GameManager.CurrentState = GameManager.GameState.PLAYER_TURN;
         Engine.Instance!.ScreenManager.Children.Remove(this);
+        IsExclusiveMouse = false;
+        if (_goBackToPlayerState)
+            Engine.Instance!.GameManager.CurrentState = GameManager.GameState.PLAYER_TURN;
+        if (AbsentParentConsole != null)
+            AbsentParentConsole.IsExclusiveMouse = true;
+
+        OnClosed?.Invoke();
     }
 
-    private LimbTargetWindow(BodyComponent body, List<LimbData> limbs, Action<LimbData> action, string windowTitle) : base(WIDTH, limbs.Count + 2) // use the create function not this one to instantiate the object
+    private LimbTargetWindow(BodyComponent body, List<LimbData> limbs, Action<LimbData> action, string windowTitle, bool goBackToPlayerState) : base(WIDTH, limbs.Count + 2) // use the create function not this one to instantiate the object
     {
-        // get selection state going
-        Engine.Instance!.GameManager.CurrentState = GameManager.GameState.UI;
         IsFocused = true;
+        IsExclusiveMouse = true;
 
         // set basic properties
         Position = (Game.Instance.ScreenCellsX / 2 - WIDTH / 2, Game.Instance.ScreenCellsY - Height);
         _body = body;
         _limbs = limbs;
         _action = action;
+        _goBackToPlayerState = goBackToPlayerState;
 
         // create controls
         _controls = new();

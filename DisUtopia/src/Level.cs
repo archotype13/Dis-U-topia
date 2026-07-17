@@ -203,17 +203,38 @@ public sealed class Level : Persistant
             );
         }
 
-        // test item
-        for (int i = 0; i <= 100; i++)
+        // test items
+        AddEntity(new Entity()
         {
-            AddEntity(new Entity()
+            Name = $"item",
+            Position = new(3, 3),
+            Render = new(new ColoredGlyph(Color.Red, Color.Transparent, '\\'), (int)GeneralConstants.DrawingOrders.ITEMS),
+            Item = new() { Weight = 1}
+        });
+
+        AddEntity(new Entity()
+        {
+            Name = $"bandage",
+            Position = new(3, 3),
+            Render = new(new ColoredGlyph(Color.WhiteSmoke, Color.Transparent, '='), (int)GeneralConstants.DrawingOrders.ITEMS),
+            Item = new() 
             {
-                Name = $"item",
-                Position = new(3, 3),
-                Render = new(new ColoredGlyph(Color.Red, Color.Transparent, '\\'), (int)GeneralConstants.DrawingOrders.ITEMS),
-                Item = new() { Weight = 0}
-            });
-        }
+                Weight = 1,
+                Consumable = new()
+            }
+        });
+
+        AddEntity(new Entity()
+        {
+            Name = $"dead rat",
+            Position = new(3, 3),
+            Render = new(new ColoredGlyph(Color.WhiteSmoke, Color.Transparent, '='), (int)GeneralConstants.DrawingOrders.ITEMS),
+            Item = new() 
+            {
+                Weight = 4,
+                Consumable = new()
+            }
+        });
         
         Engine.Instance!.GameManager.Player = new Entity()
         {

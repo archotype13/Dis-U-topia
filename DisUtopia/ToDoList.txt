@@ -1,7 +1,9 @@
-Core features
+Core features before release
 --------------------------------------------------------------------------------------
 
 items
+    examination window
+
     Uses
         consumables
         weapons
@@ -40,21 +42,22 @@ content
 balancing
 
 make stuff look pretty for release
+    multi selection option for entity selection windows
+    examination description window
 
 --------------------------------------------------------------------------------------
 Future features
 --------------------------------------------------------------------------------------
 
-sever limbs
+make ui not suck to work with
+    common class for windows to inherit from
+better hud using inbuilt classes
 
-I think combat runs super slow???
+combat overhaul!!!
+    stamina
+    severing limbs??
 
-fps counter for checking passive performance
-
-Components saved in a list???
-    allows for easier way to add new components
-
-Better adding and removing queue system for adding and removing stuff during a round
+hunger
 
 input manager
     direction selection
@@ -63,8 +66,6 @@ input manager
 modular ai
     maybe player shouldn't have ai
 
-better ui using inbuilt classes
-
 new drawing system
     give map an IRenderable?
     particles!!!
@@ -72,7 +73,6 @@ new drawing system
         like in caves of qud
 
 way to quickly change stuff with solids on astar grid when toggling an entities solid property
-added to level method on components?
 
 queued player actions
     path to
