@@ -1,25 +1,13 @@
-using System.Runtime.InteropServices;
 using SadConsole.Input;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 
-public sealed class EntityExaminationWindow : ControlsConsole
+public sealed class EntityExaminationWindow : UiWindow
 {
     private const int WIDTH = 40;
-    private readonly bool _goBackToPlayerState; // whether the game manager state should go back to PLAYER_TURN when the window is closed. Use when other ui opens this menu
-    public ScreenObject? AbsentParentConsole; // since all of these windows are children of the root screen, this variable keeps track of the console that created it for exclusive mouse stuff
     private readonly Entity _entity;
-    public event Action? OnClosed;
 
     private readonly Dictionary<Keys, Button> ButtonShortcuts = [];
-
-    public override void Update(TimeSpan delta)
-    {
-        if ( Engine.Keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape) && UseKeyboard)
-            Close();
-
-        base.Update(delta);
-    }
 
     public override bool ProcessKeyboard(Keyboard keyboard)
     {
@@ -31,23 +19,8 @@ public sealed class EntityExaminationWindow : ControlsConsole
         return base.ProcessKeyboard(keyboard);
     }
 
-    public void Close()
+    public EntityExaminationWindow(Entity entity, int height, bool goBackToPlayerState) : base(WIDTH, height, goBackToPlayerState)
     {
-        Engine.Instance!.ScreenManager.Children.Remove(this);
-        IsExclusiveMouse = false;
-        if (_goBackToPlayerState)
-            Engine.Instance!.GameManager.CurrentState = GameManager.GameState.PLAYER_TURN;
-        if (AbsentParentConsole != null)
-        {
-            AbsentParentConsole.IsExclusiveMouse = true;
-        }
-            
-        OnClosed?.Invoke();
-    }
-
-    public EntityExaminationWindow(Entity entity, int height, bool goBackToPlayerState) : base(WIDTH, height)
-    {
-        _goBackToPlayerState = goBackToPlayerState;
         _entity = entity;
 
         IsFocused = true;
@@ -74,15 +47,13 @@ public sealed class EntityExaminationWindow : ControlsConsole
             if (entity.Item.Consumable != null) // consumable button
             {
                 Button consumableButton = new("C) Consume");
-
-                consumableButton.UpdateAndRedraw(new());
-                System.Console.WriteLine(consumableButton.MouseArea.Width);
+                consumableButton.UpdateAndRedraw(new()); // update to get new width
 
                 consumableButton.Position = ((Width - consumableButton.MouseArea.Width) / 2, y);
                 // set up action
                 consumableButton.Click += (s, a) =>
                 {
-                    System.Console.WriteLine("Consumed");
+                    entity.Item.Consumable.Consume(Engine.Instance!.GameManager.Player!, entity, this);
                     Close();
                 };
 

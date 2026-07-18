@@ -18,7 +18,7 @@ public sealed class MoveAction(Point newCords) : EntityAction // uses the move s
                     }
                     else if (entities.Count > 1) // multiple entities
                     {
-                        string message = "There's a";
+                        string message = "There's ";
 
                         for (int i = 0; i < entities.Count; i++)
                         {
@@ -26,9 +26,15 @@ public sealed class MoveAction(Point newCords) : EntityAction // uses the move s
                             {
                                 message += $"a {entities[i].Name}";
                             }
-                            if ( i == entities.Count - 1 )
+                            else if (i + 1 > GeneralConstants.MAX_ENTITY_ON_TILE_MESSAGE_LENGTH)
+                            {
+                                message += $", and {entities.Count - i} other things here";
+                                break;
+                            }
+                            else if ( i == entities.Count - 1 )
                             {
                                 message += $", and a {entities[i].Name} here";
+                                break;
                             }
                             else
                             {
@@ -184,11 +190,8 @@ public sealed class PickUpItemAction(Entity target) : EntityAction // make sure 
     public override ActionResult Perform(Entity actor)
     {
         // check if the item won't cause the actor to overfill their inventory
-        if (actor.Inventory!.CurrentWeight + Target.Item!.Weight <= actor.Inventory!.MaxWeight)
+        if (actor.Inventory!.AddItem(Target))
         {
-            actor.Inventory.Items.Add(Target);
-            actor.Inventory.CurrentWeight += Target.Item.Weight;
-
             // remove item from level
             Engine.Instance!.GameManager.CurrentLevel!.RemoveEntity(Target);
             
@@ -197,7 +200,7 @@ public sealed class PickUpItemAction(Entity target) : EntityAction // make sure 
             {
                 Engine.Instance!.ScreenManager.Log.LogMessage($"You pick up the {Target.Name}");
             }
-            return new SucceededActionResult(Target.Item.Weight); // the energy used is equivalent to the item's weight
+            return new SucceededActionResult(Target.Item!.Weight); // the energy used is equivalent to the item's weight
         }
         else
         {
@@ -218,7 +221,7 @@ public sealed class DropItemAction(Entity target) : EntityAction // make sure ta
     public override ActionResult Perform(Entity actor)
     {
         // remove item from the actor's inventory
-        actor.Inventory!.Items.Remove(Target);
+        actor.Inventory!.RemoveItem(Target);
         // set it's position
         if (actor.Position != null && Target.Position != null)
         {

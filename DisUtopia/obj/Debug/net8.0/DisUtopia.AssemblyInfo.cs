@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DisUtopia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2f52e043b1bd7dda68d1512831e7f24ac4c3a31")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9d6f265252d5f970d3a49063be862be453e9cec0")]
 [assembly: System.Reflection.AssemblyProductAttribute("DisUtopia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DisUtopia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

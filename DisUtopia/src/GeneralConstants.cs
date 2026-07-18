@@ -13,6 +13,7 @@ public static class GeneralConstants
     }
 
     public const int PICKUP_DROP_WINDOW_WIDTH = 40;
+    public const int MAX_ENTITY_ON_TILE_MESSAGE_LENGTH = 5; // maximum amount of entities until the log message for walking on a tile with just say "and x other things"
 
     public static Color GrayscaleColor(Color color)
     {

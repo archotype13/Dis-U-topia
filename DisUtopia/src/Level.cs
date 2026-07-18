@@ -212,29 +212,34 @@ public sealed class Level : Persistant
             Item = new() { Weight = 1}
         });
 
-        AddEntity(new Entity()
+        for (int i = 0; i < 30; i++)
         {
-            Name = $"bandage",
-            Position = new(3, 3),
-            Render = new(new ColoredGlyph(Color.WhiteSmoke, Color.Transparent, '='), (int)GeneralConstants.DrawingOrders.ITEMS),
-            Item = new() 
+            AddEntity(new Entity()
             {
-                Weight = 1,
-                Consumable = new()
-            }
-        });
+                Name = $"bandage",
+                Position = new(3, 3),
+                Render = new(new ColoredGlyph(Color.WhiteSmoke, Color.Transparent, '='), (int)GeneralConstants.DrawingOrders.ITEMS),
+                Item = new() 
+                {
+                    Weight = 1,
+                    Consumable = new()
+                }
+            });
 
-        AddEntity(new Entity()
-        {
-            Name = $"dead rat",
-            Position = new(3, 3),
-            Render = new(new ColoredGlyph(Color.WhiteSmoke, Color.Transparent, '='), (int)GeneralConstants.DrawingOrders.ITEMS),
-            Item = new() 
+            AddEntity(new Entity()
             {
-                Weight = 4,
-                Consumable = new()
-            }
-        });
+                Name = $"Panacea tablet",
+                Position = new(3, 3),
+                Render = new(new ColoredGlyph(Color.Gold, Color.Transparent, '!'), (int)GeneralConstants.DrawingOrders.ITEMS),
+                Item = new() 
+                {
+                    Weight = 4,
+                    Consumable = new()
+                }
+            });
+        }
+
+        
         
         Engine.Instance!.GameManager.Player = new Entity()
         {

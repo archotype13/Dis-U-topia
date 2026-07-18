@@ -2,26 +2,13 @@ using SadConsole.Input;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 
-public sealed class InventoryWindow : ControlsConsole
+public sealed class InventoryWindow : UiWindow
 {
     private const int WIDTH = 40;
     private const int HEIGHT = 30;
     private readonly EntitySelectionWindow _selectionWindow;
 
-    public override void Update(TimeSpan delta)
-    {
-        if (Engine.Keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape) && UseKeyboard)
-            Close();
-        base.Update(delta);
-    }
-
-    public void Close()
-    {
-        Engine.Instance!.ScreenManager.Children.Remove(this);
-        Engine.Instance!.GameManager.CurrentState = GameManager.GameState.PLAYER_TURN;
-    }
-
-    public InventoryWindow() : base(WIDTH, HEIGHT)
+    public InventoryWindow() : base(WIDTH, HEIGHT, true)
     {
         Engine.Instance!.GameManager.CurrentState = GameManager.GameState.UI;
 
@@ -33,12 +20,12 @@ public sealed class InventoryWindow : ControlsConsole
         _selectionWindow.List.SelectedItemExecuted += (s, a) => 
         {
             UseKeyboard = false;
-            IsFocused = false;
-            _selectionWindow.IsFocused = false;
-            _selectionWindow.List.IsFocused = false;
             EntityExaminationWindow entityExaminationWindow = EntityExaminationWindow.Create((Entity)a.Item!, false);
             entityExaminationWindow.OnClosed += () => { UseKeyboard = true; };
         };
+        // redraw when the player's inventory changes
+        Engine.Instance!.GameManager.Player!.Inventory!.OnChanged += (s, a) => {_selectionWindow.List.Items.Remove(a!.Entity);};
+
         Children.Add(_selectionWindow);
 
         // add weight label

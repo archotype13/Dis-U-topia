@@ -1,8 +1,41 @@
+using System.Security.Cryptography.X509Certificates;
+using Coroutine;
+using SadRogue.Primitives.SpatialMaps;
+
 public class InventoryComponent : EntityComponent
 {
     public int MaxWeight = 100;
     public int CurrentWeight = 0;
-    public List<Entity> Items = [];
+    public List<Entity> Items = []; // while exposed for ui purposes, use AddItem and RemoveItem methods to alter contents
+
+    public event EventHandler<ItemsChangedEventArgs>? OnChanged;
+    public struct ItemsChangedEventArgs(Entity entity)
+    {
+        public Entity Entity = entity;
+    }
+
+    public bool AddItem(Entity entity, bool forced = false)
+    {
+        if (entity.Item == null)
+            return false;
+        
+        if (entity.Item.Weight + CurrentWeight > MaxWeight && forced == false)
+            return false;
+
+        Items.Add(entity);
+        CurrentWeight += entity.Item.Weight;
+        
+        OnChanged?.Invoke(this, new(entity));
+        return true;
+    }
+
+    public void RemoveItem(Entity entity)
+    {
+        Items.Remove(entity);
+        CurrentWeight -= entity.Item!.Weight;
+        
+        OnChanged?.Invoke(this, new(entity));
+    }
 
     public override void Save(BinaryWriter writer)
     {

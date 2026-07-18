@@ -2,8 +2,6 @@ Core features before release
 --------------------------------------------------------------------------------------
 
 items
-    examination window
-
     Uses
         consumables
         weapons
@@ -44,6 +42,7 @@ balancing
 make stuff look pretty for release
     multi selection option for entity selection windows
     examination description window
+    names of items will contain some of their information (charges and damage)
 
 --------------------------------------------------------------------------------------
 Future features

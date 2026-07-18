@@ -1,34 +1,15 @@
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 
-public class EntitySelectionWindow : ControlsConsole
+public class EntitySelectionWindow : UiWindow
 {
     public readonly ListBox List;
-    private readonly bool HandleQuiting;
-    private readonly bool GoBackToPlayerState;
-    public ScreenObject? AbsentParentConsole; // since all of these windows are children of the root screen, this variable keeps track of the console that created it for exclusive mouse stuff
 
-    public override void Update(TimeSpan delta)
-    {
-        if (HandleQuiting && Engine.Keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape) && IsFocused)
-            Close();
-        base.Update(delta);
-    }
-
-    public void Close()
-    {
-        Engine.Instance!.ScreenManager.Children.Remove(this);
-        if (GoBackToPlayerState)
-            Engine.Instance!.GameManager.CurrentState = GameManager.GameState.PLAYER_TURN;
-        if (AbsentParentConsole != null)
-            AbsentParentConsole.IsExclusiveMouse = true;
-    }
-
-    public EntitySelectionWindow(int x, int y, int width, int height, List<Entity> entities, string title, bool handleQuiting, bool goBackToPlayerState = true) : base(width, height)
+    public EntitySelectionWindow(int x, int y, int width, int height, List<Entity> entities, string title, bool handleQuiting, bool goBackToPlayerState = true) : base(width, height, goBackToPlayerState)
     {
         Position = (x, y);
-        HandleQuiting = handleQuiting;
-        GoBackToPlayerState = goBackToPlayerState;
+        HandleQuitting = handleQuiting;
+        UseKeyboard = true;
 
         Engine.Instance!.GameManager.CurrentState = GameManager.GameState.UI;
 

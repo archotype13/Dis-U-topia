@@ -3,11 +3,6 @@ public sealed class ItemComponent : EntityComponent
     public int Weight = 0;
     public ConsumableItemData? Consumable;
 
-    public void Consume()
-    {
-        
-    }
-
     public override void Save(BinaryWriter writer)
     {
         writer.Write(Weight);
