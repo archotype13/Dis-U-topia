@@ -175,7 +175,7 @@ public sealed class Level : Persistant
         }
 
         // add test entities
-        for (int i = 0; i < 0; i++)
+        for (int i = 0; i < 1; i++)
         {
             AddEntity(new Entity()
             {
@@ -222,7 +222,7 @@ public sealed class Level : Persistant
                 Item = new() 
                 {
                     Weight = 1,
-                    Consumable = new()
+                    Consumable = new() {Effects = [new HealTargetLimbEffect(){MinAmount = 8, MaxAmount = 15}]}
                 }
             });
 
@@ -234,7 +234,7 @@ public sealed class Level : Persistant
                 Item = new() 
                 {
                     Weight = 4,
-                    Consumable = new()
+                    Consumable = new() {Effects = [new HealAllLimbsEffect(){MinAmount = 8, MaxAmount = 15}]}
                 }
             });
         }

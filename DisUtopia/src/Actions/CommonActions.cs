@@ -146,7 +146,7 @@ public sealed class AttackAction(Entity target, int baseCost, AttackData attack,
     {
         if (useTargetWindow && Target.Body != null) // handle target selection
         {
-            Engine.Instance!.ScreenManager.Children.Add(LimbTargetWindow.Create(Target.Body, limb => {Engine.Instance.GameManager.EntityPerformAction(actor, new TargetedAttackAction(Target, limb, BaseCost, Attack));}));
+            Engine.Instance!.ScreenManager.Children.Add(LimbTargetWindow.Create(Target.Body, limb => {Engine.Instance.GameManager.EntityPerformAction(actor, new TargetedAttackAction(Target, limb, BaseCost, Attack));}, "Attack which limb?"));
             return new SucceededActionResult(0);
         }
 

@@ -4,12 +4,23 @@ Core features before release
 items
     Uses
         consumables
+            consume action
+            quit inventory and windows when player is out of energy
+
         weapons
         armor
 
 status effects
     be able to deal flat damage
+        seperate combat from health system
     use get and set to change certain attributes without going to far (IE: speed min)
+
+    armor and weapons that can apply effects
+    limb targeted stuff that keeps selected limbs
+        equipment limbs give target limb
+        consuming will immediately prompt
+
+attributes
 
 better enemy ai
 
